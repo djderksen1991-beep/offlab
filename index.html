@@ -5,13 +5,13 @@
 <meta name="theme-color" content="#15101F" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="offlab">
+<meta name="apple-mobile-web-app-title" content="Analog">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Offlab</title>
+<title>Analog</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,9 +45,16 @@ button{cursor:pointer}
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 #view{display:flex;flex-direction:column;gap:18px}
 header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.brandwrap{display:flex;flex-direction:column;gap:4px}
+.brand .wm{color:inherit}
+.brand b{color:var(--accent);font-weight:inherit}
+.lang{border:2px solid var(--edge);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:.02em;box-shadow:0 3px 0 var(--shadow);flex:none;display:flex;gap:6px}
+.lang .on{color:var(--accent)}
+.lang .off{opacity:.4}
+.tagline{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.01em;color:var(--muted)}
 .brand{font-family:var(--font-display);font-weight:800;font-size:36px;letter-spacing:-.05em;margin:0;display:flex;align-items:center;gap:8px;line-height:1}
 .brand span{color:var(--accent)}
-.brand svg{width:30px;height:30px;flex:none}
+.brand svg{width:38px;height:38px;flex:none}
 .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 h2{font-family:var(--font-display);font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-.03em;margin:0;text-wrap:balance}
 h3{font-family:var(--font-display);font-weight:700;font-size:18px;letter-spacing:-.01em;margin:0}
@@ -245,9 +252,9 @@ nav.tabs button[aria-current="page"]{background:var(--accent);color:var(--accent
 
 <main class="app" id="app">
   <header class="top">
-    <h1 class="brand">off<span>lab</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 006 21h12a1.7 1.7 0 001.5-2.5L14 9V3" fill="var(--k0)"/><path d="M7 15h10"/></svg>
-    </h1>
+    <div class="brandwrap"><h1 class="brand"><span class="wm">analog<b>.</b></span><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff"/><rect x="8.4" y="5.2" width="7.2" height="13.6" rx="1.6" fill="#1E1633"/><rect x="9.4" y="7.3" width="5.2" height="9" fill="#fff"/><path d="M4.9 4.9L19.1 19.1" stroke="var(--accent)" stroke-width="2.8"/><circle cx="12" cy="12" r="10" stroke="var(--accent)" stroke-width="2.8"/></svg></h1>
+    <p class="tagline" id="tagline">Kannst du noch offline?</p></div>
+    <button type="button" class="lang" id="langBtn" data-act="lang" aria-label="Sprache / Language"></button>
   </header>
   <div id="view"></div>
 </main>
@@ -256,15 +263,15 @@ nav.tabs button[aria-current="page"]{background:var(--accent);color:var(--accent
   <div class="in">
     <button type="button" data-act="tab" data-v="heute">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>
-      Heute
+      <span data-l="heute">Heute</span>
     </button>
     <button type="button" data-act="tab" data-v="bericht">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
-      Bericht
+      <span data-l="bericht">Bericht</span>
     </button>
     <button type="button" data-act="tab" data-v="exp">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>
-      Neu
+      <span data-l="exp">Neu</span>
     </button>
   </div>
 </nav>
@@ -366,21 +373,127 @@ function draw(names){
 }
 const hostOf=(mode,names,manual)=>mode==='manual'?String(manual||'').trim():draw(names);
 HYPS.forEach(h=>{if(!h.goal)h.goal={n:7,l:'Tage geschafft'}});
-const goalTag=g=>g.n===7?'jeden Tag':g.n===1?'1× pro Woche':`${g.n}× pro Woche`;
-const howPanel=(id,k)=>`<div class="how" style="--kc:var(--k${k})"><span class="eyebrow">So funktioniert’s</span><p>${esc(HOW[id])}</p></div>`;
+const goalTag=g=>g.n===7?tr('jeden Tag','every day'):g.n===1?tr('1× pro Woche','1× a week'):`${g.n}× ${tr('pro Woche','a week')}`;
+const howPanel=(id,k)=>`<div class="how" style="--kc:var(--k${k})"><span class="eyebrow">${tr('So funktioniert’s','How it works')}</span><p>${esc((LANG==='en'?HOW_EN:HOW)[id])}</p></div>`;
 const POSK=[0,2,3];   /* Farbe nach Position der drei Karten */
 const METRICS=[
-  {k:'sleep',l:'Schlaf',c:5},
-  {k:'focus',l:'Fokus',c:3},
-  {k:'mood',l:'Stimmung',c:4}
+  {k:'sleep',de:'Schlaf',en:'Sleep',c:5,get l(){return tr(this.de,this.en)}},
+  {k:'focus',de:'Fokus',en:'Focus',c:3,get l(){return tr(this.de,this.en)}},
+  {k:'mood',de:'Stimmung',en:'Mood',c:4,get l(){return tr(this.de,this.en)}}
 ];
+/* ---------- Sprache / Language ---------- */
+const LKEY='analog.lang';
+let LANG=(()=>{try{const v=localStorage.getItem(LKEY);if(v==='de'||v==='en')return v}catch(e){}return /^de/i.test(navigator.language||'')?'de':'en'})();
+const tr=(de,en)=>LANG==='en'?en:de;
+const ENC={
+  abend:{t:'Last hour offline',w:'If I go offline one hour before bed,',d:'then I fall asleep faster.'},
+  push:{t:'Push off',w:'If only real people are allowed to ping me,',d:'then I reach for my phone less often.'},
+  homescreen:{t:'Empty home screen',w:'If social apps are no longer on my home screen,',d:'then I open them less often by accident.'},
+  wecker:{t:'Real alarm clock',w:'If I use a real alarm clock instead of my phone,',d:'then I don’t grab it first thing in the morning.'},
+  morgen:{t:'First hour offline',w:'If I don’t look at my phone for the first hour of the morning,',d:'then my head is clearer.'},
+  rucksack:{t:'Phone in the bag',w:'If my phone stays in my bag while I study or work,',d:'then I stay focused for longer.'},
+  raus:{t:'Five minutes outside first',w:'If I go outside for five minutes first whenever I’m bored,',d:'then I scroll less in the evening.',gl:'Went outside first'},
+  weg:{t:'Commute without phone',w:'If I only listen to music or podcasts on the way, without looking at the screen,',d:'then I can switch off better.',gl:'Trips without screen'},
+  tisch:{t:'No phone at the table',w:'If there’s no phone on the table when I eat with others,',d:'then the conversations get better.',gl:'Meals without phone'},
+  spazier:{t:'Walk without phone',w:'If I go for a walk without my phone three times,',d:'then I come up with more ideas of my own.',gl:'Walks without phone'},
+  grau:{t:'Grayscale',w:'If my screen is black and white,',d:'then my phone gets more boring.'},
+  appweg:{t:'One app gone',w:'If my main app is deleted for a week,',d:'then I notice what I really use it for.'},
+  nurmsg:{t:'Messengers only',w:'If I only use messengers and no feeds for a week,',d:'then I have more time for other things.'},
+  nopost:{t:'A week without posting',w:'If none of us posts or shares stories for a week,',d:'then we think less about likes.',gl:'Days without posting'},
+  kurz:{t:'Short-video break',w:'If none of us watches Reels, Shorts or TikToks for a week,',d:'then we feel calmer.',gl:'Days without short videos'},
+  bett:{t:'Phone sleeps outside',w:'If our phones charge outside the bedroom at night,',d:'then we sleep better and wake up fresher.',gl:'Nights phone outside'},
+  podcast:{t:'Podcast instead of scrolling',w:'If we listen to a podcast instead of scrolling three times,',d:'then we wind down more calmly.',gl:'Podcast instead of scrolling'},
+  feeds:{t:'Feeds only after 6 pm',w:'If we only open Insta, TikTok and co. in the evening,',d:'then we get more done during the day.',gl:'Days feeds after 6 pm'},
+  samstag:{t:'Offline Saturday',w:'If we spend a whole day offline,',d:'then we miss less than we thought.',gl:'Day fully offline'}
+};
+const HOW_EN={
+  abend:'One hour before bed, the phone goes away, ideally into another room. Set your alarm first.',
+  push:'Turn off notifications for all apps. Only calls and messages from people stay on.',
+  homescreen:'Move social apps into a folder on the last page. Only tools like camera and maps stay on your home screen.',
+  wecker:'A real alarm clock wakes you up, the phone stays out of reach at night. A simple one will do.',
+  morgen:'After you get up, the phone is off limits for 60 minutes. Teeth, breakfast, movement first, then phone.',
+  rucksack:'While studying or working, your phone stays in your bag, not on the table. Ideally switched off.',
+  raus:'When you’re bored, go outside for five minutes first, then you may use your phone. Tick off every day it worked under “Today”.',
+  weg:'On your way, only listen to music or podcasts and don’t look at the screen. Tick off every day it worked under “Today”.',
+  tisch:'When eating with others, the phone stays out of sight. Tick off every day it worked under “Today”.',
+  spazier:'Go for a walk three times a week, without your phone or in flight mode. Tick off each walk under “Today”.',
+  grau:'Set your screen to grayscale (Accessibility, Color filters). Everything still works, just less colorful.',
+  appweg:'Delete the app that costs you the most time for seven days. Notice when you miss it.',
+  nurmsg:'One week of messengers and calls only. No feeds, no short videos, no stories.',
+  nopost:'Nobody posts for seven days, no stories either. Watching is allowed. Tick off every day.',
+  kurz:'Seven days without Reels, Shorts or TikToks. Long videos are fine. Tick off every day.',
+  bett:'Your phone charges in another room at night. Tick off every night it worked.',
+  podcast:'When you feel like scrolling, listen to a podcast instead. Three times a week is enough. Tick off each time.',
+  feeds:'Only open Insta, TikTok and co. after 6 pm. Tick off every day it worked.',
+  samstag:'A whole day without your phone. Emergency calls are fine. Tick off the day.',
+  cown:'Whoever decides this week comes up with something everyone does on their own. It counts in days.',
+  own:'Write your own: If I …, then … . The more specific, the better you can test it.'
+};
+const SAY_EN={
+  own:[
+    'Your thumb took the day off. It sends its regards.',
+    'The algorithm misses you. Let it sulk a little.',
+    'Offline today, legend tomorrow.',
+    'Your battery is proud of you. And honestly relieved.',
+    'Achievement unlocked: Real Life, level 1.',
+    'Your phone clocked out, you got free time. Win-win.',
+    'Plot twist: the world keeps turning without your feed.',
+    'More sky than screen today. Strong.',
+    'Breaking news: human beats phone. Phone demands a rematch.',
+    'If thumbs won medals: gold.',
+    'Push notifications 0, you 1.',
+    'Boring for advertisers today. Exciting for life.',
+    'Your inner sloth is impressed.',
+    'The Wi-Fi asked about you. We said you were busy.',
+    'Your eyes give you a small round of applause.',
+    'Not scrolled, but lived. Almost poetic.'
+  ],
+  crew:[
+    'The crew sticks together. The Wi-Fi feels left out.',
+    'One phone alone is weak. A crew without phones is unstoppable.',
+    'Group chat update: fewer memes, more life.',
+    'Crew level up. The other apps are whispering.',
+    'Offline together is the new online together.',
+    'The crew challenge is shaking in its boots.',
+    'If this were a series, the hero music would kick in now.',
+    'Your thumbs started a support group. Going great.',
+    'Crew power on. Battery power saved.',
+    'You’re like a band. Just without instruments. And without phones.'
+  ],
+  both:[
+    'Double win! Your phone is looking for a new hobby.',
+    'Two for two. The algorithm needs a break now.',
+    'Combo! Two challenges, zero doomscrolling.',
+    'Full score. Your screen is taking the rest of the day off.',
+    'Doubly done. From now on: offline pro.',
+    'Your own and the crew challenge. Today you’re the main character.',
+    'Two ticks in one day. The phone is quietly crying in the corner.'
+  ],
+  joker:[
+    'Joker played. Even superheroes need a day off.',
+    'A pause isn’t giving up. A pause is strategy.',
+    'Joker today, champion tomorrow.',
+    'Even the best battery needs to recharge.',
+    'Smart move: play the joker right and you win the week.'
+  ]
+};
+const GL_EN={'Tage geschafft':'Days done','Tage dabei':'Days in'};
+/* Lokalisierte Sicht auf eine Challenge. Eigene Ideen behalten den eingegebenen Text. */
+function L(h){
+  if(!h)return {};
+  const b=[...HYPS,...CREW].find(x=>x.id===h.id), en=LANG==='en';
+  if(!b)return {t:h.t,w:h.w,d:h.d,gl:h.goal?(en?(GL_EN[h.goal.l]||h.goal.l):h.goal.l):''};
+  const e=(en&&ENC[h.id])||{}, gl0=b.goal?b.goal.l:'';
+  return {t:e.t||b.t,w:e.w||b.w,d:e.d||b.d,gl:en?(e.gl||GL_EN[gl0]||gl0):gl0};
+}
+
 const KEY='offlab.v1';
 
 const iso=d=>{const z=new Date(d);z.setMinutes(z.getMinutes()-z.getTimezoneOffset());return z.toISOString().slice(0,10)};
 const today=()=>iso(new Date());
 const addDays=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return iso(d)};
 const diffDays=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5);
-const fmtDate=(s,o={weekday:'long',day:'numeric',month:'short'})=>new Date(s+'T12:00:00').toLocaleDateString('de-DE',o);
+const fmtDate=(s,o={weekday:'long',day:'numeric',month:'short'})=>new Date(s+'T12:00:00').toLocaleDateString(LANG==='en'?'en-GB':'de-DE',o);
 const fmtMin=m=>{m=Math.round(Math.abs(m));const h=Math.floor(m/60),r=m%60;return h?(r?`${h} h ${r} min`:`${h} h`):`${r} min`};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const reduced=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -393,9 +506,9 @@ const crew3=()=>{const o=(weekNo()%2)*3;return [0,1,2].map(i=>CREW[o+i])};
 function demo(){
   const start=addDays(today(),-4);
   return {demo:true,hyp:HYPS[0],crewHyp:{...CREW[0],k:1},host:'Mia',crewNames:['Mia','Jonas','Lea'],hostMode:'random',start,baseline:270,crew:addDays(start,7),entries:{
-    1:{sleep:2,focus:2,mood:3,minutes:255,note:'Wecker vergessen, war komisch ohne Handy.'},
+    1:{sleep:2,focus:2,mood:3,minutes:255,note:tr('Wecker vergessen, war komisch ohne Handy.','Forgot my alarm, felt weird without my phone.')},
     2:{sleep:3,focus:3,mood:3,done:true,minutes:230,note:''},
-    3:{sleep:4,focus:3,mood:4,done:true,minutes:195,cdone:true,note:'Erstes Mal ohne Scrollen eingeschlafen.'},
+    3:{sleep:4,focus:3,mood:4,done:true,minutes:195,cdone:true,note:tr('Erstes Mal ohne Scrollen eingeschlafen.','First time I fell asleep without scrolling.')},
     4:{sleep:4,focus:4,mood:4,done:true,minutes:180,note:''}
   }};
 }
@@ -452,16 +565,18 @@ const SAY={
   ]
 };
 const SAYK={own:3,crew:1,both:2,joker:5};
-const SAYL={own:'Eigene Challenge geschafft',crew:'Crew-Challenge geschafft',both:'Beide geschafft',joker:'Joker eingesetzt'};
+const SAYL_DE={own:'Eigene Challenge geschafft',crew:'Crew-Challenge geschafft',both:'Beide geschafft',joker:'Joker eingesetzt'};
+const SAYL_EN={own:'Your challenge done',crew:'Crew challenge done',both:'Both done',joker:'Joker played'};
+const SAYL=new Proxy({},{get:(_,k)=>(LANG==='en'?SAYL_EN:SAYL_DE)[k]});
 const dayKind=e=>!e?null:e.done&&e.cdone?'both':e.done?'own':e.cdone?'crew':e.joker?'joker':null;
-const saying=(kind,day)=>{const L=SAY[kind];return L[(hash(kind+'|'+S.start)+day)%L.length]};
+const saying=(kind,day)=>{const L=(LANG==='en'?SAY_EN:SAY)[kind];return L[(hash(kind+'|'+S.start)+day)%L.length]};
 function showSaying(kind){
   const sh=document.getElementById('sheet');
   sh.innerHTML=`<div class="in pop" role="dialog" aria-modal="true" aria-labelledby="sayQ" style="--kc:var(--k${SAYK[kind]})">
     ${ico(kind==='joker'?'joker':kind==='crew'?'stapel':'cown','ic deco')}
-    <span class="eyebrow">${SAYL[kind]} · Tag ${selDay}</span>
+    <span class="eyebrow">${SAYL[kind]} · ${tr('Tag','Day')} ${selDay}</span>
     <p class="q" id="sayQ">${esc(saying(kind,selDay))}</p>
-    <button type="button" class="btn" data-act="sheet-close">Weiter</button></div>`;
+    <button type="button" class="btn" data-act="sheet-close">${tr('Weiter','Continue')}</button></div>`;
   sh.hidden=false; sh.querySelector('button').focus();
 }
 function buzz(){try{navigator.vibrate&&navigator.vibrate([25,40,60])}catch(e){}}
@@ -483,7 +598,7 @@ const jokerDay=()=>{const k=Object.keys(S.entries).find(n=>S.entries[n]&&S.entri
 const goalDone=()=>S.hyp&&S.hyp.goal?Object.values(S.entries).filter(e=>e&&(e.done||e.joker)).length:0;
 const crewDone=()=>S.crewHyp?Object.values(S.entries).filter(e=>e&&(e.cdone||e.joker)).length:0;
 
-const pips=(done,n)=>`<span class="pips" role="img" aria-label="${Math.min(done,n)} von ${n}">${Array.from({length:n},(_,i)=>`<i class="${i<done?'on':''}"></i>`).join('')}</span>`;
+const pips=(done,n)=>`<span class="pips" role="img" aria-label="${Math.min(done,n)} ${tr('von','of')} ${n}">${Array.from({length:n},(_,i)=>`<i class="${i<done?'on':''}"></i>`).join('')}</span>`;
 
 function face(v){
   const c=(v-3)*1.9;
@@ -513,15 +628,15 @@ function countUp(el){
 }
 
 function hero(){
-  const h=S.hyp,d=currentDay(),g=h.goal;
-  return `<section class="pop hero" style="--kc:var(--k${h.k??0})" aria-label="Dein Experiment">
+  const h=S.hyp,d=currentDay(),g=h.goal,l=L(h);
+  return `<section class="pop hero" style="--kc:var(--k${h.k??0})" aria-label="${tr('Dein Experiment','Your experiment')}">
     ${ico(h.id,'ic wm')}
-    <div class="sticker" role="img" aria-label="Tag ${d} von 7"><div><small>Tag</small><strong>${d}/7</strong></div></div>
-    <span class="eyebrow">Dein Experiment</span>
-    <div class="ttl">${esc(h.t)}</div>
-    <p class="wd"><b>Wenn</b>${esc(h.w.replace(/^Wenn\s*/i,''))}</p>
-    <p class="wd"><b>Dann</b>${esc(h.d.replace(/^dann\s*/i,''))}</p>
-    ${g?`<div class="pl">${pips(goalDone(),g.n)}<span>${esc(g.l)}</span></div>`:''}
+    <div class="sticker" role="img" aria-label="${tr('Tag','Day')} ${d} ${tr('von','of')} 7"><div><small>${tr('Tag','Day')}</small><strong>${d}/7</strong></div></div>
+    <span class="eyebrow">${tr('Dein Experiment','Your experiment')}</span>
+    <div class="ttl">${esc(l.t)}</div>
+    <p class="wd"><b>${tr('Wenn','If')}</b>${esc(l.w.replace(/^(Wenn|If)\s*/i,''))}</p>
+    <p class="wd"><b>${tr('Dann','Then')}</b>${esc(l.d.replace(/^(dann|then)\s*/i,''))}</p>
+    ${g?`<div class="pl">${pips(goalDone(),g.n)}<span>${esc(l.gl)}</span></div>`:''}
   </section>`;
 }
 function crewCard(){
@@ -529,12 +644,12 @@ function crewCard(){
   const c=S.crewHyp;
   return `<section class="pop crew" style="--kc:var(--k${c.k??1})" aria-label="Crew-Challenge">
     ${ico(c.id==='cown'?'cown':c.id,'ic')}
-    <div class="tx"><span class="eyebrow">Crew${S.host?' · '+esc(S.host)+' entscheidet':''}</span>
-      <div class="ct">${esc(c.t)}</div>${pips(crewDone(),c.goal.n)}</div>
+    <div class="tx"><span class="eyebrow">Crew${S.host?' · '+esc(S.host)+tr(' entscheidet',' decides'):''}</span>
+      <div class="ct">${esc(L(c).t)}</div>${pips(crewDone(),c.goal.n)}</div>
   </section>`;
 }
 function demoBanner(){
-  return S.demo?`<div class="banner"><span>Beispieldaten</span><button class="btn small" data-act="start-own">Eigenes starten</button></div>`:'';
+  return S.demo?`<div class="banner"><span>${tr('Beispieldaten','Sample data')}</span><button class="btn small" data-act="start-own">${tr('Eigenes starten','Start your own')}</button></div>`:'';
 }
 
 function tile(act,id,label,done,n,on,k){
@@ -544,41 +659,41 @@ function tile(act,id,label,done,n,on,k){
 
 function viewToday(){
   const d=currentDay(); const e=S.entries[selDay]||{};
-  const WD=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const WD=LANG==='en'?['Su','Mo','Tu','We','Th','Fr','Sa']:['So','Mo','Di','Mi','Do','Fr','Sa'];
   const days=Array.from({length:7},(_,i)=>{const n=i+1;const cls=['day',S.entries[n]?'done':'',n===d?'today':''].join(' ');
     const wd=WD[new Date(addDays(S.start,i)+'T12:00:00').getDay()];
-    return `<button type="button" class="${cls}" data-act="day" data-v="${n}" aria-pressed="${n===selDay}" ${n>d?'disabled':''} aria-label="Tag ${n}, ${wd}${S.entries[n]?', erfasst':''}"><small>${wd}</small><b>${n}</b></button>`}).join('');
+    return `<button type="button" class="${cls}" data-act="day" data-v="${n}" aria-pressed="${n===selDay}" ${n>d?'disabled':''} aria-label="${tr('Tag','Day')} ${n}, ${wd}${S.entries[n]?tr(', erfasst',', logged'):''}"><small>${wd}</small><b>${n}</b></button>`}).join('');
   const mrow=m=>`<div class="metric" role="group" aria-label="${m.l}">
       <h3>${m.l}</h3>
-      <div class="faces">${[1,2,3,4,5].map(v=>`<button type="button" class="face" style="--fc:var(--f${v})" data-act="rate" data-k="${m.k}" data-v="${v}" aria-pressed="${e[m.k]===v}" aria-label="${m.l} ${v} von 5">${face(v)}</button>`).join('')}</div>
+      <div class="faces">${[1,2,3,4,5].map(v=>`<button type="button" class="face" style="--fc:var(--f${v})" data-act="rate" data-k="${m.k}" data-v="${v}" aria-pressed="${e[m.k]===v}" aria-label="${m.l} ${v} ${tr('von','of')} 5">${face(v)}</button>`).join('')}</div>
     </div>`;
   const jd=jokerDay();
   const tiles=[];
-  if(S.hyp.goal)tiles.push(tile('goal',S.hyp.id,S.hyp.goal.l==='Tage geschafft'?S.hyp.t:S.hyp.goal.l,goalDone(),S.hyp.goal.n,!!e.done,S.hyp.k??0));
-  if(S.crewHyp)tiles.push(tile('cgoal',S.crewHyp.id==='cown'?'cown':S.crewHyp.id,S.crewHyp.goal.l,crewDone(),S.crewHyp.goal.n,!!e.cdone,S.crewHyp.k??1));
+  if(S.hyp.goal)tiles.push(tile('goal',S.hyp.id,S.hyp.goal.l==='Tage geschafft'?L(S.hyp).t:L(S.hyp).gl,goalDone(),S.hyp.goal.n,!!e.done,S.hyp.k??0));
+  if(S.crewHyp)tiles.push(tile('cgoal',S.crewHyp.id==='cown'?'cown':S.crewHyp.id,L(S.crewHyp).gl,crewDone(),S.crewHyp.goal.n,!!e.cdone,S.crewHyp.k??1));
   return `${demoBanner()}${hero()}${crewCard()}
   <div class="stack">
-    <div class="days" role="group" aria-label="Tage">${days}</div>
-    <div class="head"><span class="eyebrow">${fmtDate(addDays(S.start,selDay-1))}</span><h2>${selDay===d?'Wie war dein Tag?':'Tag '+selDay+' nachtragen'}</h2></div>
+    <div class="days" role="group" aria-label="${tr('Tage','Days')}">${days}</div>
+    <div class="head"><span class="eyebrow">${fmtDate(addDays(S.start,selDay-1))}</span><h2>${selDay===d?tr('Wie war dein Tag?','How was your day?'):tr('Tag '+selDay+' nachtragen','Fill in day '+selDay)}</h2></div>
   </div>
   ${tiles.length?`<div class="tiles ${tiles.length===1?'one':''}">${tiles.join('')}</div>`:''}
   ${dayKind(e)?`<div class="pop quote" style="--kc:var(--k${SAYK[dayKind(e)]})"><span class="eyebrow">${SAYL[dayKind(e)]}</span><p>${esc(saying(dayKind(e),selDay))}</p></div>`:''}
   <div class="card">${mrow(METRICS.find(m=>m.k==='mood'))}</div>
-  <button type="button" class="more" data-act="more" aria-expanded="${moreOpen}"><span><b>${moreOpen?'Weniger anzeigen':'Mehr erfassen'}</b><small>Schlaf, Fokus, Bildschirmzeit, Notiz</small></span>
+  <button type="button" class="more" data-act="more" aria-expanded="${moreOpen}"><span><b>${moreOpen?tr('Weniger anzeigen','Show less'):tr('Mehr erfassen','Log more')}</b><small>${tr('Schlaf, Fokus, Bildschirmzeit, Notiz','Sleep, focus, screen time, note')}</small></span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   ${moreOpen?`<div class="card">${METRICS.filter(m=>m.k!=='mood').map(mrow).join('')}</div>
   <div class="card">
-    <div class="stack"><h3>Bildschirmzeit</h3>
-      <div class="stepper"><button type="button" data-act="min" data-v="-15" aria-label="15 Minuten weniger">−</button>
+    <div class="stack"><h3>${tr('Bildschirmzeit','Screen time')}</h3>
+      <div class="stepper"><button type="button" data-act="min" data-v="-15" aria-label="${tr('15 Minuten weniger','15 minutes less')}">−</button>
       <output id="minOut">${e.minutes!=null?fmtMin(e.minutes):'–'}</output>
-      <button type="button" data-act="min" data-v="15" aria-label="15 Minuten mehr">+</button></div>
+      <button type="button" data-act="min" data-v="15" aria-label="${tr('15 Minuten mehr','15 minutes more')}">+</button></div>
     </div>
-    <div class="stack"><label for="note"><h3>Notiz</h3></label>
-      <input type="text" id="note" maxlength="140" placeholder="Was hat dich überrascht?" value="${esc(e.note)}"></div>
+    <div class="stack"><label for="note"><h3>${tr('Notiz','Note')}</h3></label>
+      <input type="text" id="note" maxlength="140" placeholder="${tr('Was hat dich überrascht?','What surprised you?')}" value="${esc(e.note)}"></div>
   </div>`:''}
   <button type="button" class="joker" data-act="joker" aria-pressed="${!!e.joker}" ${jd&&jd!==selDay?'disabled':''}>
-    ${ico('joker')}<span><b>${e.joker?'Joker aktiv':'Joker'}</b><small>${jd&&jd!==selDay?'Schon bei Tag '+jd+' benutzt':e.joker?'Tag zählt, Zeit nicht':'1× pro Woche'}</small></span></button>
-  <p class="saved">Gespeichert</p>`;
+    ${ico('joker')}<span><b>${e.joker?tr('Joker aktiv','Joker active'):'Joker'}</b><small>${jd&&jd!==selDay?tr('Schon bei Tag '+jd+' benutzt','Already used on day '+jd):e.joker?tr('Tag zählt, Zeit nicht','Day counts, time doesn’t'):tr('1× pro Woche','1× a week')}</small></span></button>
+  <p class="saved">${tr('Gespeichert','Saved')}</p>`;
 }
 
 function stats(){
@@ -593,7 +708,7 @@ function stats(){
 
 function dotChart(st){
   const cw=40,lw=70,top=8,rh=40,W=lw+cw*7,H=top+rh*3+26;
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Schlaf, Fokus und Stimmung pro Tag">`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${tr('Schlaf, Fokus und Stimmung pro Tag','Sleep, focus and mood per day')}">`;
   METRICS.forEach((m,ri)=>{
     const cy=top+rh*ri+rh/2;
     s+=`<text x="0" y="${cy+5}" fill="var(--ink)" font-family="Figtree, sans-serif" font-size="14" font-weight="700">${m.l}</text>`;
@@ -604,7 +719,7 @@ function dotChart(st){
           :`<circle cx="${cx}" cy="${cy}" r="3" fill="var(--bg)" stroke="var(--muted)" stroke-dasharray="2 2"/>`;
     }
   });
-  for(let d=1;d<=7;d++){s+=`<text x="${lw+cw*(d-1)+cw/2}" y="${H-6}" text-anchor="middle" fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="11">T${d}</text>`}
+  for(let d=1;d<=7;d++){s+=`<text x="${lw+cw*(d-1)+cw/2}" y="${H-6}" text-anchor="middle" fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="11">${tr('T','D')}${d}</text>`}
   return s+'</svg>';
 }
 
@@ -617,11 +732,12 @@ function delta(st,k){
 
 function shareText(st){
   const g=st.gained;
-  const lines=[`offlab · Woche 1`,`Experiment: ${S.hyp.t}`,`Titel: ${grade().title}`];
-  if(S.crewHyp)lines.push(`Crew: ${S.crewHyp.t} (${Math.min(crewDone(),S.crewHyp.goal.n)} von ${S.crewHyp.goal.n}×)`);
-  if(S.hyp.goal)lines.push(`Ziel: ${Math.min(goalDone(),S.hyp.goal.n)} von ${S.hyp.goal.n}× ${S.hyp.goal.l}`);
-  if(st.mins.length)lines.push(g>0?`Zurückgewonnen: ca. ${fmtMin(g)}`:`Handyzeit: mehr als vorher (${fmtMin(-g)})`);
-  METRICS.forEach(m=>{const a=st.first(m.k),b=st.last(m.k);if(a!=null&&b!=null)lines.push(`${m.l}: ${a} → ${b} (von 5)`)});
+  const of=tr('von','of');
+  const lines=[tr('Analog · Kannst du noch offline?','Analog · Can you still go offline?'),`Experiment: ${L(S.hyp).t}`,`${tr('Titel','Title')}: ${grade().title}`];
+  if(S.crewHyp)lines.push(`Crew: ${L(S.crewHyp).t} (${Math.min(crewDone(),S.crewHyp.goal.n)} ${of} ${S.crewHyp.goal.n}×)`);
+  if(S.hyp.goal)lines.push(`${tr('Ziel','Goal')}: ${Math.min(goalDone(),S.hyp.goal.n)} ${of} ${S.hyp.goal.n}× ${L(S.hyp).gl}`);
+  if(st.mins.length)lines.push(g>0?`${tr('Zurückgewonnen: ca.','Won back: approx.')} ${fmtMin(g)}`:`${tr('Handyzeit: mehr als vorher','Phone time: more than before')} (${fmtMin(-g)})`);
+  METRICS.forEach(m=>{const a=st.first(m.k),b=st.last(m.k);if(a!=null&&b!=null)lines.push(`${m.l}: ${a} → ${b} (${of} 5)`)});
   return lines.join('\n');
 }
 
@@ -631,95 +747,95 @@ function grade(){
   const ps=[part(goalDone(),S.hyp.goal.n)];
   if(S.crewHyp)ps.push(part(crewDone(),S.crewHyp.goal.n));
   const r=ps.reduce((a,b)=>a+b,0)/ps.length;
-  if(r>=.85)return {title:'Offline-Ninja',line:'Lautlos, schnell, kaum gesehen. Dein Handy fragt sich, wo du warst.',k:0};
-  if(r>=.6)return {title:'Teilzeit-Mönch',line:'Halb Zen, halb WLAN. Eine sehr gesunde Mischung.',k:3};
-  if(r>=.35)return {title:'Scroll-Rebell',line:'Du widersprichst dem Feed. Der Feed ist beleidigt. Gut so.',k:1};
-  return {title:'Mutige Testperson',line:'Experiment gestartet, ehrlich hingeschaut. Genau darum geht’s.',k:5};
+  if(r>=.85)return {title:tr('Offline-Ninja','Offline Ninja'),line:tr('Lautlos, schnell, kaum gesehen. Dein Handy fragt sich, wo du warst.','Silent, swift, barely seen. Your phone wonders where you went.'),k:0};
+  if(r>=.6)return {title:tr('Teilzeit-Mönch','Part-time Monk'),line:tr('Halb Zen, halb WLAN. Eine sehr gesunde Mischung.','Half zen, half Wi-Fi. A very healthy mix.'),k:3};
+  if(r>=.35)return {title:tr('Scroll-Rebell','Scroll Rebel'),line:tr('Du widersprichst dem Feed. Der Feed ist beleidigt. Gut so.','You talk back to the feed. The feed is offended. Good.'),k:1};
+  return {title:tr('Mutige Testperson','Brave Test Pilot'),line:tr('Experiment gestartet, ehrlich hingeschaut. Genau darum geht’s.','Experiment started, honestly reviewed. That’s the whole point.'),k:5};
 }
 
 function viewReport(){
   const st=stats(); const n=st.list.length;
-  if(!n)return `${hero()}<div class="card"><h2>Noch leer</h2><p class="hint">Erfasse Tag 1 unter „Heute“.</p>
-    <button class="btn" data-act="tab" data-v="heute">Zu Heute</button></div>`;
+  if(!n)return `${hero()}<div class="card"><h2>${tr('Noch leer','Empty so far')}</h2><p class="hint">${tr('Erfasse Tag 1 unter „Heute“.','Log day 1 under “Today”.')}</p>
+    <button class="btn" data-act="tab" data-v="heute">${tr('Zu Heute','Go to Today')}</button></div>`;
   const g=st.gained;
-  const big=st.mins.length?`<div class="pop bigrow" style="--kc:var(--k${g>=0?2:1})"><span class="eyebrow" style="color:inherit;opacity:.7">${g>=0?'Zurückgewonnen':'Mehr Handyzeit'}</span>
+  const big=st.mins.length?`<div class="pop bigrow" style="--kc:var(--k${g>=0?2:1})"><span class="eyebrow" style="color:inherit;opacity:.7">${g>=0?tr('Zurückgewonnen','Time won back'):tr('Mehr Handyzeit','More phone time')}</span>
       <span class="num" data-min="${Math.abs(g)}" data-sign="${g>=0?'≈ ':'+ '}">${g>=0?'≈ ':'+ '}${fmtMin(g)}</span>
-      <span style="font-weight:600">an ${st.mins.length} ${st.mins.length===1?'Tag':'Tagen'}, vorher ${fmtMin(S.baseline)} pro Tag</span></div>`:'';
+      <span style="font-weight:600">${tr('an','over')} ${st.mins.length} ${st.mins.length===1?tr('Tag','day'):tr('Tagen','days')}, ${tr('vorher','before:')} ${fmtMin(S.baseline)} ${tr('pro Tag','per day')}</span></div>`:'';
   const kpis=[];
-  if(S.hyp.goal)kpis.push(`<div class="pop kpi" style="--kc:var(--k${S.hyp.k??0})"><span class="eyebrow">Ziel</span><span class="v">${Math.min(goalDone(),S.hyp.goal.n)}/${S.hyp.goal.n}</span><span class="tl">${esc(S.hyp.goal.l)}</span></div>`);
-  if(S.crewHyp)kpis.push(`<div class="pop kpi" style="--kc:var(--k${S.crewHyp.k??1})"><span class="eyebrow">Crew</span><span class="v">${Math.min(crewDone(),S.crewHyp.goal.n)}/${S.crewHyp.goal.n}</span><span class="tl">${esc(S.crewHyp.t)}</span></div>`);
-  const tiles=METRICS.map(m=>{const a=st.avg(m.k);return `<div class="stat" style="--kc:var(--k${m.c})"><span class="eyebrow">${m.l}</span><span class="v">${a==null?'–':a.toFixed(1).replace('.',',')}</span>${delta(st,m.k)}</div>`}).join('');
+  if(S.hyp.goal)kpis.push(`<div class="pop kpi" style="--kc:var(--k${S.hyp.k??0})"><span class="eyebrow">${tr('Ziel','Goal')}</span><span class="v">${Math.min(goalDone(),S.hyp.goal.n)}/${S.hyp.goal.n}</span><span class="tl">${esc(L(S.hyp).gl)}</span></div>`);
+  if(S.crewHyp)kpis.push(`<div class="pop kpi" style="--kc:var(--k${S.crewHyp.k??1})"><span class="eyebrow">Crew</span><span class="v">${Math.min(crewDone(),S.crewHyp.goal.n)}/${S.crewHyp.goal.n}</span><span class="tl">${esc(L(S.crewHyp).t)}</span></div>`);
+  const tiles=METRICS.map(m=>{const a=st.avg(m.k);return `<div class="stat" style="--kc:var(--k${m.c})"><span class="eyebrow">${m.l}</span><span class="v">${a==null?'–':(LANG==='en'?a.toFixed(1):a.toFixed(1).replace('.',','))}</span>${delta(st,m.k)}</div>`}).join('');
   const jk=jokerDay();
-  const notes=st.list.filter(e=>e.note).slice(-2).map(e=>`<p class="note">Tag ${e.n}: ${esc(e.note)}</p>`).join('');
-  const jokerNote=jk?`<p class="note">Joker an Tag ${jk}. Zeit dieses Tages ist nicht eingerechnet.</p>`:'';
+  const notes=st.list.filter(e=>e.note).slice(-2).map(e=>`<p class="note">${tr('Tag','Day')} ${e.n}: ${esc(e.note)}</p>`).join('');
+  const jokerNote=jk?`<p class="note">${tr(`Joker an Tag ${jk}. Zeit dieses Tages ist nicht eingerechnet.`,`Joker on day ${jk}. That day’s time is not counted.`)}</p>`:'';
   return `${demoBanner()}
-  <div class="head"><span class="eyebrow">${n} von 7 Tagen</span><h2>Dein Bericht</h2></div>
-  ${(gr=>`<div class="pop grade" style="--kc:var(--k${gr.k})">${ico('joker','ic gdeco')}<span class="eyebrow">${weekDone()?'Wochen-Zeugnis':'Dein Titel bisher'}</span><div class="gt">${gr.title}</div><p>${gr.line}</p></div>`)(grade())}
+  <div class="head"><span class="eyebrow">${n} ${tr('von 7 Tagen','of 7 days')}</span><h2>${tr('Dein Bericht','Your report')}</h2></div>
+  ${(gr=>`<div class="pop grade" style="--kc:var(--k${gr.k})">${ico('joker','ic gdeco')}<span class="eyebrow">${weekDone()?tr('Wochen-Zeugnis','Report card'):tr('Dein Titel bisher','Your title so far')}</span><div class="gt">${gr.title}</div><p>${gr.line}</p></div>`)(grade())}
   ${big}
   ${kpis.length?`<div class="tiles ${kpis.length===1?'one':''}">${kpis.join('')}</div>`:''}
   <div class="stats">${tiles}</div>
   <div class="card"><div class="chart">${dotChart(st)}</div></div>
   ${notes||jokerNote?`<div class="stack">${notes}${jokerNote}</div>`:''}
-  <p class="hint">Selbstauskunft: so hast du es erlebt.</p>
+  <p class="hint">${tr('Selbstauskunft: so hast du es erlebt.','Self-reported: how you experienced it.')}</p>
 
   <div class="stack">
-    <h2>Deine Story-Karte</h2>
-    <div class="shot"><img id="shareImg" alt="Bild-Karte deiner Woche zum Teilen"></div>
-    <div class="row"><button class="btn" data-act="shareimg">Bild teilen</button><button class="btn ghost" data-act="copy">Text kopieren</button></div>
-    <p class="hint">Oder Bild gedrückt halten und speichern.</p>
+    <h2>${tr('Deine Story-Karte','Your story card')}</h2>
+    <div class="shot"><img id="shareImg" alt="${tr('Bild-Karte deiner Woche zum Teilen','Image card of your week to share')}"></div>
+    <div class="row"><button class="btn" data-act="shareimg">${tr('Bild teilen','Share image')}</button><button class="btn ghost" data-act="copy">${tr('Text kopieren','Copy text')}</button></div>
+    <p class="hint">${tr('Oder Bild gedrückt halten und speichern.','Or press and hold the image to save it.')}</p>
     <textarea id="copyFallback" readonly hidden style="width:100%;min-height:140px;border-radius:14px;border:2px solid var(--line);background:var(--surface);padding:10px"></textarea>
   </div>`;
 }
 
 function newSetup(){return {hyp:'',w:'',d:'',baseline:240,crew:addDays(today(),7),host:S.hostMode==='manual'?(S.host||''):'',names:(S.crewNames||[]).join(', '),mode:S.hostMode||'random',cpick:'',cown:''}}
 
-function hostNowText(s){const n=draw(parseNames(s.names));return n?`Diese Woche: <b>${esc(n)}</b>`:'Namen eintragen, dann wird jede Woche jemand ausgelost.'}
+function hostNowText(s){const n=draw(parseNames(s.names));return n?`${tr('Diese Woche','This week')}: <b>${esc(n)}</b>`:tr('Namen eintragen, dann wird jede Woche jemand ausgelost.','Enter names and someone is drawn each week.')}
 
 function viewSetup(){
   const s=setup; const three=threeOpts();
   const opts=three.map((h,i)=>`<button type="button" class="pop opt" style="--kc:var(--k${POSK[i]})" data-act="pick" data-v="${h.id}" aria-pressed="${s.hyp===h.id}">
-      <span class="ib">${ico(h.id)}</span><span><span class="ot">${esc(h.t)}</span>${h.goal?`<span class="og">${goalTag(h.goal)}</span>`:''}</span></button>${s.hyp===h.id?howPanel(h.id,POSK[i]):''}`).join('')
+      <span class="ib">${ico(h.id)}</span><span><span class="ot">${esc(L(h).t)}</span>${h.goal?`<span class="og">${goalTag(h.goal)}</span>`:''}</span></button>${s.hyp===h.id?howPanel(h.id,POSK[i]):''}`).join('')
    +`<button type="button" class="pop opt dashed" style="--kc:var(--k4)" data-act="pick" data-v="own" aria-pressed="${s.hyp==='own'}">
-      <span class="ib">${ico('own')}</span><span class="ot">Eigene Idee</span></button>${s.hyp==='own'?howPanel('own',4):''}`;
+      <span class="ib">${ico('own')}</span><span class="ot">${tr('Eigene Idee','Your own idea')}</span></button>${s.hyp==='own'?howPanel('own',4):''}`;
   const copts=crew3().map(c=>`<button type="button" class="pop opt" style="--kc:var(--k1)" data-act="cpick" data-v="${c.id}" aria-pressed="${s.cpick===c.id}">
-      <span class="ib">${ico(c.id)}</span><span><span class="ot">${esc(c.t)}</span><span class="og">${goalTag(c.goal)}</span></span></button>${s.cpick===c.id?howPanel(c.id,1):''}`).join('')
+      <span class="ib">${ico(c.id)}</span><span><span class="ot">${esc(L(c).t)}</span><span class="og">${goalTag(c.goal)}</span></span></button>${s.cpick===c.id?howPanel(c.id,1):''}`).join('')
    +`<button type="button" class="pop opt dashed" style="--kc:var(--k1)" data-act="cpick" data-v="own" aria-pressed="${s.cpick==='own'}">
-      <span class="ib">${ico('cown')}</span><span class="ot">Eigene Idee</span></button>${s.cpick==='own'?howPanel('cown',1):''}`;
-  return `<div class="head"><span class="eyebrow">Neue Woche</span><h2>Wähle eine</h2></div>
-  <div class="opts" role="group" aria-label="Challenge wählen">${opts}</div>
+      <span class="ib">${ico('cown')}</span><span class="ot">${tr('Eigene Idee','Your own idea')}</span></button>${s.cpick==='own'?howPanel('cown',1):''}`;
+  return `<div class="head"><span class="eyebrow">${tr('Neue Woche','New week')}</span><h2>${tr('Wähle eine','Pick one')}</h2></div>
+  <div class="opts" role="group" aria-label="${tr('Challenge wählen','Pick a challenge')}">${opts}</div>
   <div class="card" ${s.hyp==='own'?'':'hidden'}>
-    <div class="stack"><label for="ownW"><h3>Wenn ich …</h3></label><input type="text" id="ownW" maxlength="90" placeholder="nach 22 Uhr den Flugmodus anmache" value="${esc(s.w)}"></div>
-    <div class="stack"><label for="ownD"><h3>… dann …</h3></label><input type="text" id="ownD" maxlength="90" placeholder="schlafe ich schneller ein" value="${esc(s.d)}"></div>
+    <div class="stack"><label for="ownW"><h3>${tr('Wenn ich …','If I …')}</h3></label><input type="text" id="ownW" maxlength="90" placeholder="${tr('nach 22 Uhr den Flugmodus anmache','switch to flight mode after 10 pm')}" value="${esc(s.w)}"></div>
+    <div class="stack"><label for="ownD"><h3>${tr('… dann …','… then …')}</h3></label><input type="text" id="ownD" maxlength="90" placeholder="${tr('schlafe ich schneller ein','I fall asleep faster')}" value="${esc(s.d)}"></div>
   </div>
 
-  <div class="head"><span class="eyebrow">Alle machen mit</span><h2>Crew</h2></div>
+  <div class="head"><span class="eyebrow">${tr('Alle machen mit','Everyone joins')}</span><h2>Crew</h2></div>
   <div class="card">
-    <div class="stack"><h3>Du entscheidest diese Woche</h3>
-      <div class="chips" role="group" aria-label="Wer entscheidet">
-        <button type="button" class="chip" data-act="hmode" data-v="random" aria-pressed="${s.mode==='random'}">Zufällig</button>
-        <button type="button" class="chip" data-act="hmode" data-v="manual" aria-pressed="${s.mode==='manual'}">Selbst eingeben</button>
+    <div class="stack"><h3>${tr('Du entscheidest diese Woche','You decide this week')}</h3>
+      <div class="chips" role="group" aria-label="${tr('Wer entscheidet','Who decides')}">
+        <button type="button" class="chip" data-act="hmode" data-v="random" aria-pressed="${s.mode==='random'}">${tr('Zufällig','Random')}</button>
+        <button type="button" class="chip" data-act="hmode" data-v="manual" aria-pressed="${s.mode==='manual'}">${tr('Selbst eingeben','Enter manually')}</button>
       </div>
-      ${s.mode==='random'?`<label for="names" class="hint">Namen der Crew, mit Komma getrennt. Jede Woche wird eine Person ausgelost.</label>
+      ${s.mode==='random'?`<label for="names" class="hint">${tr('Namen der Crew, mit Komma getrennt. Jede Woche wird eine Person ausgelost.','Crew names, separated by commas. Each week one person is drawn.')}</label>
       <input type="text" id="names" maxlength="160" placeholder="Mia, Jonas, Lea" value="${esc(s.names)}">
       <p class="hostnow" id="hostNow">${hostNowText(s)}</p>`
-      :`<label for="host" class="hint">Wer entscheidet diese Woche?</label>
+      :`<label for="host" class="hint">${tr('Wer entscheidet diese Woche?','Who decides this week?')}</label>
       <input type="text" id="host" maxlength="30" placeholder="Name" value="${esc(s.host)}">`}</div>
   </div>
-  <div class="opts sm" role="group" aria-label="Crew-Challenge wählen">${copts}</div>
+  <div class="opts sm" role="group" aria-label="${tr('Crew-Challenge wählen','Pick a crew challenge')}">${copts}</div>
   <div class="card" ${s.cpick==='own'?'':'hidden'}>
-    <div class="stack"><label for="cown"><h3>Idee für die Crew</h3></label><input type="text" id="cown" maxlength="80" placeholder="Alle posten nichts bis Sonntag" value="${esc(s.cown)}"></div>
+    <div class="stack"><label for="cown"><h3>${tr('Idee für die Crew','Idea for the crew')}</h3></label><input type="text" id="cown" maxlength="80" placeholder="${tr('Alle posten nichts bis Sonntag','Nobody posts until Sunday')}" value="${esc(s.cown)}"></div>
   </div>
 
   <div class="card">
-    <div class="stack"><label for="base"><h3>Handyzeit gestern</h3></label>
+    <div class="stack"><label for="base"><h3>${tr('Handyzeit gestern','Phone time yesterday')}</h3></label>
       <output id="baseOut" style="font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-.03em;line-height:1">${fmtMin(s.baseline)}</output>
       <input type="range" id="base" min="30" max="600" step="15" value="${s.baseline}"></div>
   </div>
   <div class="card">
-    <div class="stack"><label for="crew"><h3>Crew-Runde</h3></label>
+    <div class="stack"><label for="crew"><h3>${tr('Crew-Runde','Crew meetup')}</h3></label>
       <input type="date" id="crew" value="${s.crew}"></div>
   </div>
-  <div class="row"><button class="btn" data-act="launch">Los geht’s</button>${S.demo&&!load()?'':'<button class="btn ghost" data-act="cancel">Abbrechen</button>'}</div>`;
+  <div class="row"><button class="btn" data-act="launch">${tr('Los geht’s','Let’s go')}</button>${S.demo&&!load()?'':`<button class="btn ghost" data-act="cancel">${tr('Abbrechen','Cancel')}</button>`}</div>`;
 }
 
 function viewExp(){
@@ -728,15 +844,15 @@ function viewExp(){
   return `${demoBanner()}${hero()}${crewCard()}
   <div class="card facts">
     <div><span>Start</span><span>${fmtDate(S.start)}</span></div>
-    <div><span>Vorher</span><span>${fmtMin(S.baseline)} pro Tag</span></div>
-    <div><span>Crew-Runde</span><span>${fmtDate(S.crew)}</span></div>
+    <div><span>${tr('Vorher','Before')}</span><span>${fmtMin(S.baseline)} ${tr('pro Tag','per day')}</span></div>
+    <div><span>${tr('Crew-Runde','Crew meetup')}</span><span>${fmtDate(S.crew)}</span></div>
   </div>
-  ${done?'<h2>Woche geschafft.</h2>':''}
-  <button class="btn block" data-act="start-own">${done?'Nächste Woche':S.demo?'Eigenes starten':'Neue Woche'}</button>
-  ${confirmReset?`<div class="confirm"><p><strong>Alle Einträge löschen?</strong></p>
-    <div class="row"><button class="btn" data-act="reset-yes">Löschen</button><button class="btn ghost" data-act="reset-no">Behalten</button></div></div>`
-    :`<button class="btn ghost block" data-act="reset-ask">Daten löschen</button>`}
-  <p class="hint">Alles bleibt auf diesem Gerät.</p>`;
+  ${done?`<h2>${tr('Woche geschafft.','Week done.')}</h2>`:''}
+  <button class="btn block" data-act="start-own">${done?tr('Nächste Woche','Next week'):S.demo?tr('Eigenes starten','Start your own'):tr('Neue Woche','New week')}</button>
+  ${confirmReset?`<div class="confirm"><p><strong>${tr('Alle Einträge löschen?','Delete all entries?')}</strong></p>
+    <div class="row"><button class="btn" data-act="reset-yes">${tr('Löschen','Delete')}</button><button class="btn ghost" data-act="reset-no">${tr('Behalten','Keep')}</button></div></div>`
+    :`<button class="btn ghost block" data-act="reset-ask">${tr('Daten löschen','Delete data')}</button>`}
+  <p class="hint">${tr('Alles bleibt auf diesem Gerät.','Everything stays on this device.')}</p>`;
 }
 
 function rr(x,X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()}
@@ -753,33 +869,33 @@ async function makeCard(){
   for(let j=0;j<=H;j+=54){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke()}
   const box=(X,Y,w,h,fill)=>{rr(x,X+12,Y+14,w,h,44);x.fillStyle=INK;x.fill();rr(x,X,Y,w,h,44);x.fillStyle=fill;x.fill();x.lineWidth=6;x.strokeStyle=INK;x.stroke()};
   x.textBaseline='alphabetic';
-  x.font=`800 104px ${D}`;x.fillStyle=INK;x.fillText('off',80,200);const w1=x.measureText('off').width;x.fillStyle=ACC;x.fillText('lab',80+w1,200);
-  x.font=`500 30px ${M}`;x.fillStyle=MUTED;x.fillText(('Woche ab '+fmtDate(S.start,{day:'numeric',month:'long'})).toUpperCase(),84,256);
+  x.font=`800 104px ${D}`;x.fillStyle=INK;x.fillText('analog',80,200);const w1=x.measureText('analog').width;x.fillStyle=ACC;x.fillText('.',80+w1,200);
+  x.font=`500 30px ${M}`;x.fillStyle=MUTED;x.fillText((tr('Woche ab ','Week of ')+fmtDate(S.start,{day:'numeric',month:'long'})).toUpperCase(),84,256);
   // Karte 1: Experiment
-  let y=320;x.font=`800 92px ${D}`;const tl=wrap(x,S.hyp.t,820).slice(0,3);
+  let y=320;x.font=`800 92px ${D}`;const tl=wrap(x,L(S.hyp).t,820).slice(0,3);
   const h1=110+tl.length*96+130;box(80,y,920,h1,K[S.hyp.k??0]);
-  x.fillStyle=INK;x.font=`500 28px ${M}`;x.fillText('MEIN EXPERIMENT',130,y+86);
+  x.fillStyle=INK;x.font=`500 28px ${M}`;x.fillText(tr('MEIN EXPERIMENT','MY EXPERIMENT'),130,y+86);
   x.font=`800 92px ${D}`;tl.forEach((l,i)=>x.fillText(l,128,y+190+i*96));
   const gn=S.hyp.goal.n,gd=Math.min(goalDone(),gn),py=y+h1-70;
   for(let i=0;i<gn;i++){x.beginPath();x.arc(150+i*62,py,22,0,6.283);x.lineWidth=6;x.strokeStyle=INK;x.stroke();if(i<gd){x.fillStyle=INK;x.fill()}}
-  x.font=`600 36px ${B}`;x.fillStyle=INK;x.fillText(`${gd} von ${gn}`,150+gn*62,py+13);
+  x.font=`600 36px ${B}`;x.fillStyle=INK;x.fillText(`${gd} ${tr('von','of')} ${gn}`,150+gn*62,py+13);
   // Karte 2: Titel
   y+=h1+60;x.font=`600 38px ${B}`;const gl=wrap(x,gr.line,820).slice(0,3);
   const h2=96+100+gl.length*50+50;box(80,y,920,h2,K[gr.k===(S.hyp.k??0)?(gr.k+2)%6:gr.k]);
-  x.fillStyle=INK;x.font=`500 28px ${M}`;x.fillText(weekDone()?'WOCHEN-ZEUGNIS':'MEIN TITEL BISHER',130,y+86);
+  x.fillStyle=INK;x.font=`500 28px ${M}`;x.fillText(weekDone()?tr('WOCHEN-ZEUGNIS','REPORT CARD'):tr('MEIN TITEL BISHER','MY TITLE SO FAR'),130,y+86);
   x.font=`800 88px ${D}`;x.fillText(gr.title,128,y+186);
   x.font=`600 38px ${B}`;gl.forEach((l,i)=>x.fillText(l,130,y+250+i*50));
   // Zeilen
   y+=h2+80;const rows=[];
-  if(S.crewHyp)rows.push(['Crew',`${Math.min(crewDone(),S.crewHyp.goal.n)}/${S.crewHyp.goal.n} · ${S.crewHyp.t}`]);
-  if(st.mins.length)rows.push([g>=0?'Zurückgewonnen':'Mehr Handyzeit',(g>=0?'≈ ':'+ ')+fmtMin(g)]);
+  if(S.crewHyp)rows.push(['Crew',`${Math.min(crewDone(),S.crewHyp.goal.n)}/${S.crewHyp.goal.n} · ${L(S.crewHyp).t}`]);
+  if(st.mins.length)rows.push([g>=0?tr('Zurückgewonnen','Time won back'):tr('Mehr Handyzeit','More phone time'),(g>=0?'≈ ':'+ ')+fmtMin(g)]);
   METRICS.forEach(m=>{const a=st.first(m.k),b=st.last(m.k);if(a!=null&&b!=null)rows.push([m.l,`${a} → ${b}`])});
   rows.forEach(([l,v])=>{if(y+70>H-150)return;
     x.strokeStyle=INK;x.lineWidth=4;x.beginPath();x.moveTo(80,y);x.lineTo(1000,y);x.stroke();
     x.fillStyle=INK;x.font=`600 40px ${B}`;x.fillText(l,84,y+62);
     x.font=`800 44px ${D}`;let vv=v;while(x.measureText(vv).width>560&&vv.length>4)vv=vv.slice(0,-2)+'…';
     x.textAlign='right';x.fillText(vv,996,y+64);x.textAlign='left';y+=100});
-  x.font=`600 34px ${B}`;x.fillStyle=MUTED;x.textAlign='center';x.fillText('Offline ist das neue Online.',W/2,H-90);x.textAlign='left';
+  x.font=`600 34px ${B}`;x.fillStyle=MUTED;x.textAlign='center';x.fillText(weekDone()?tr('Ich kann noch offline.','I can still go offline.'):tr('Kannst du noch offline?','Can you still go offline?'),W/2,H-90);x.textAlign='left';
   return await new Promise(r=>c.toBlob(r,'image/png'));
 }
 function refreshCard(){
@@ -792,6 +908,11 @@ function render(animate){
   v.className=animate?'enter':'';
   v.innerHTML=tab==='heute'?viewToday():tab==='bericht'?viewReport():viewExp();
   document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.v===tab?'page':'false'));
+  document.documentElement.lang=LANG;
+  const NL={heute:tr('Heute','Today'),bericht:tr('Bericht','Report'),exp:tr('Neu','New')};
+  document.querySelectorAll('[data-l]').forEach(el=>el.textContent=NL[el.dataset.l]);
+  document.getElementById('tagline').textContent=tr('Kannst du noch offline?','Can you still go offline?');
+  document.getElementById('langBtn').innerHTML=`<span class="${LANG==='de'?'on':'off'}">DE</span><span class="${LANG==='en'?'on':'off'}">EN</span>`;
   if(animate)v.querySelectorAll('[data-min]').forEach(countUp);
   if(document.getElementById('shareImg'))refreshCard();
 }
@@ -802,6 +923,7 @@ document.addEventListener('click',ev=>{
   const b=ev.target.closest('[data-act]'); if(!b)return;
   const a=b.dataset.act,v=b.dataset.v;
   if(a==='sheet-close'){closeSheet();return}
+  if(a==='lang'){LANG=LANG==='de'?'en':'de';try{localStorage.setItem(LKEY,LANG)}catch(e){}render(true);return}
   if(a==='more'){moreOpen=!moreOpen;render();return}
   if(a==='tab'){tab=v;confirmReset=false;if(v==='heute')selDay=Math.min(selDay,currentDay());render(true);window.scrollTo(0,0);return}
   if(a==='day'){selDay=+v;render();return}
@@ -818,16 +940,16 @@ document.addEventListener('click',ev=>{
   if(a==='cpick'){setup.cpick=setup.cpick===v?'':v;render();return}
   if(a==='cancel'){setup=null;render(true);return}
   if(a==='launch'){
-    if(!setup.hyp){toast('Bitte eine Challenge wählen');return}
+    if(!setup.hyp){toast(tr('Bitte eine Challenge wählen','Please pick a challenge'));return}
     let crewHyp=null;
     if(setup.cpick==='own'){
-      if(!setup.cown.trim()){toast('Bitte die Idee eintragen');return}
+      if(!setup.cown.trim()){toast(tr('Bitte die Idee eintragen','Please enter the idea'));return}
       crewHyp={id:'cown',t:setup.cown.trim().slice(0,40),w:setup.cown.trim(),d:'',goal:{n:7,l:'Tage dabei'},k:1};
     } else if(setup.cpick) crewHyp={...CREW.find(c=>c.id===setup.cpick),k:1};
     let hyp;
     if(setup.hyp==='own'){
-      if(!setup.w.trim()||!setup.d.trim()){toast('Bitte beide Felder ausfüllen');return}
-      hyp={id:'own',t:setup.w.trim().replace(/^ich\s+/i,'').replace(/^./,c=>c.toUpperCase()).slice(0,40),w:'Wenn ich '+setup.w.trim()+',',d:'dann '+setup.d.trim()+'.',goal:{n:7,l:'Tage geschafft'},k:4};
+      if(!setup.w.trim()||!setup.d.trim()){toast(tr('Bitte beide Felder ausfüllen','Please fill in both fields'));return}
+      hyp={id:'own',t:setup.w.trim().replace(/^(ich|i)\s+/i,'').replace(/^./,c=>c.toUpperCase()).slice(0,40),w:tr('Wenn ich ','If I ')+setup.w.trim()+',',d:tr('dann ','then ')+setup.d.trim()+'.',goal:{n:7,l:'Tage geschafft'},k:4};
     } else {
       const idx=threeOpts().findIndex(h=>h.id===setup.hyp);
       hyp={...HYPS.find(h=>h.id===setup.hyp),k:POSK[Math.max(0,idx)]};
@@ -835,20 +957,20 @@ document.addEventListener('click',ev=>{
     burst(b);
     const names=parseNames(setup.names);
     S={demo:false,hyp,crewHyp,host:hostOf(setup.mode,names,setup.host),crewNames:names,hostMode:setup.mode,start:today(),baseline:setup.baseline,crew:setup.crew||addDays(today(),7),entries:{}};
-    save();setup=null;tab='heute';selDay=1;render(true);window.scrollTo(0,0);toast('Läuft. Viel Erfolg!');return}
+    save();setup=null;tab='heute';selDay=1;render(true);window.scrollTo(0,0);toast(tr('Läuft. Viel Erfolg!','You’re on. Good luck!'));return}
   if(a==='reset-ask'){confirmReset=true;render();return}
   if(a==='reset-no'){confirmReset=false;render();return}
-  if(a==='reset-yes'){try{localStorage.removeItem(KEY)}catch(e){}S=demo();confirmReset=false;setup=newSetup();render(true);toast('Gelöscht');return}
+  if(a==='reset-yes'){try{localStorage.removeItem(KEY)}catch(e){}S=demo();confirmReset=false;setup=newSetup();render(true);toast(tr('Gelöscht','Deleted'));return}
   if(a==='shareimg'){
-    if(!shareBlob){toast('Bild wird erstellt');return}
-    try{const f=new File([shareBlob],'offlab-woche.png',{type:'image/png'});
-      if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'offlab'}).catch(()=>{});return}}catch(e){}
-    try{const l=document.createElement('a');l.href=shareURL;l.download='offlab-woche.png';document.body.appendChild(l);l.click();l.remove()}catch(e){}
-    toast('Bild gedrückt halten zum Speichern');return}
+    if(!shareBlob){toast(tr('Bild wird erstellt','Creating image'));return}
+    try{const f=new File([shareBlob],'analog-woche.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Analog'}).catch(()=>{});return}}catch(e){}
+    try{const l=document.createElement('a');l.href=shareURL;l.download='analog-woche.png';document.body.appendChild(l);l.click();l.remove()}catch(e){}
+    toast(tr('Bild gedrückt halten zum Speichern','Press and hold the image to save'));return}
   if(a==='copy'){
     const txt=shareText(stats());
-    const fb=()=>{const t=document.getElementById('copyFallback');t.hidden=false;t.value=txt;t.focus();t.select();toast('Markiert, jetzt kopieren')};
-    try{navigator.clipboard.writeText(txt).then(()=>toast('Kopiert'),fb)}catch(e){fb()}
+    const fb=()=>{const t=document.getElementById('copyFallback');t.hidden=false;t.value=txt;t.focus();t.select();toast(tr('Markiert, jetzt kopieren','Selected, now copy'))};
+    try{navigator.clipboard.writeText(txt).then(()=>toast(tr('Kopiert','Copied')),fb)}catch(e){fb()}
     return}
 });
 
