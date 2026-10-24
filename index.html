@@ -182,9 +182,7 @@ input[type="range"]{width:100%;accent-color:var(--accent)}
 .toplist .n{font-family:var(--font-mono);font-size:12px;color:var(--muted);width:2.4em;text-align:right}
 .toplist .lbl{width:8.5em;flex:none}
 .note{font-size:14px;border-left:4px solid var(--k0);padding-left:10px}
-.questions{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
-.questions li{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px 14px;font-weight:600}
-.share{background:var(--kc);color:var(--on-k);padding:20px;display:flex;flex-direction:column;gap:12px}
+.hostnow{font-family:var(--font-display);font-size:18px;font-weight:700}
 .share .eyebrow{color:inherit;opacity:.7}
 .share .t{font-family:var(--font-display);font-weight:800;font-size:32px;line-height:1;letter-spacing:-.03em;text-wrap:balance}
 .share .line{display:flex;justify-content:space-between;gap:10px;border-top:2px solid var(--on-k);padding-top:8px;font-size:15px;font-weight:600}
@@ -206,7 +204,32 @@ nav.tabs button[aria-current="page"]{background:var(--accent);color:var(--accent
   padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:6;white-space:nowrap}
 .bit{position:fixed;width:11px;height:11px;border-radius:3px;border:2px solid var(--edge);pointer-events:none;z-index:20;transform:translate(-50%,-50%);animation:fly .75s ease-out forwards}
 @keyframes fly{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(220deg);opacity:0}}
+.more{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px 16px}
+.more b{display:block;font-family:var(--font-display);font-size:17px;line-height:1.15}
+.more small{font-size:13px;color:var(--muted)}
+.more svg{width:22px;height:22px;flex:none;transition:transform .2s}
+.more[aria-expanded="true"] svg{transform:rotate(180deg)}
+.grade{position:relative;overflow:hidden;background:var(--kc);color:var(--on-k);padding:18px 20px 20px;display:flex;flex-direction:column;gap:6px}
+.grade .eyebrow{color:inherit;opacity:.7}
+.grade .gt{font-family:var(--font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.04em;padding-right:60px}
+.grade p{font-size:15px;font-weight:600;max-width:30ch}
+.grade .gdeco{position:absolute;right:-14px;top:-14px;width:110px;height:110px;opacity:.25;transform:rotate(12deg)}
+.shot{display:flex;justify-content:center}
+.shot img{width:100%;max-width:300px;aspect-ratio:9/16;border-radius:20px;border:2px solid var(--edge);box-shadow:0 4px 0 var(--shadow);background:var(--line);display:block}
+.quote{background:var(--kc);color:var(--on-k);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.quote .eyebrow{color:inherit;opacity:.7}
+.quote p{font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
+.sheet{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;justify-content:center;background:rgba(20,14,33,.5);
+  padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet[hidden]{display:none}
+.sheet .in{width:100%;max-width:448px;background:var(--kc);color:var(--on-k);padding:24px 20px 18px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.sheet .eyebrow{color:inherit;opacity:.75}
+.sheet .q{font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1.05;letter-spacing:-.03em;text-wrap:balance;position:relative}
+.sheet .deco{position:absolute;right:-22px;top:-22px;width:130px;height:130px;opacity:.18}
+.sheet .btn{background:var(--on-k);color:#fff;margin-top:6px}
 @media (prefers-reduced-motion: no-preference){
+  .sheet .in{animation:sheetUp .35s cubic-bezier(.2,.9,.2,1.15) both}
+  @keyframes sheetUp{from{transform:translateY(60px) rotate(-2deg)}}
   #view.enter>*{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
   #view.enter>*:nth-child(2){animation-delay:.05s}#view.enter>*:nth-child(3){animation-delay:.1s}
   #view.enter>*:nth-child(4){animation-delay:.15s}#view.enter>*:nth-child(5){animation-delay:.2s}
@@ -246,6 +269,7 @@ nav.tabs button[aria-current="page"]{background:var(--accent);color:var(--accent
   </div>
 </nav>
 <div class="toast" id="toast" hidden></div>
+<div class="sheet" id="sheet" data-act="sheet-close" hidden></div>
 
 <script>
 const IC={
@@ -295,7 +319,7 @@ const HYPS=[
   {id:'appweg',lvl:3,t:'Eine App weg',w:'Wenn meine Haupt-App eine Woche vom Handy gelöscht ist,',d:'dann merke ich, wofür ich sie wirklich nutze.'},
   {id:'nurmsg',lvl:3,t:'Nur Messenger',w:'Wenn ich eine Woche nur Messenger und keine Feeds nutze,',d:'dann bleibt mehr Zeit für anderes.'}
 ];
-/* CREW: Challenges, die der Host der Woche für alle wählt. Jede Person macht sie für sich. Pro Woche werden 3 der 6 gezeigt. */
+/* CREW: Pro Woche wird eine Person ausgelost, die eine der 3 Crew-Challenges wählt. Alle machen sie für sich. */
 const CREW=[
   {id:'nopost',t:'Eine Woche nichts posten',w:'Wenn wir alle eine Woche nichts posten oder in Stories teilen,',d:'dann denken wir weniger über Likes nach.',goal:{n:7,l:'Tage ohne Posten'}},
   {id:'kurz',t:'Kurzvideo-Pause',w:'Wenn wir alle eine Woche keine Reels, Shorts oder TikToks schauen,',d:'dann fühlen wir uns ruhiger.',goal:{n:7,l:'Tage ohne Kurzvideos'}},
@@ -324,15 +348,27 @@ const HOW={
   podcast:'Wenn du scrollen willst, hörst du stattdessen einen Podcast. Dreimal in der Woche reicht. Hake jedes Mal ab.',
   feeds:'Insta, TikTok und Co. erst ab 18 Uhr öffnen. Hake jeden Tag ab, an dem es geklappt hat.',
   samstag:'Ein ganzer Tag ohne Handy. Notfall-Anrufe dürfen bleiben. Hake den Tag ab.',
+  cown:'Wer diese Woche entscheidet, denkt sich etwas aus, das alle für sich machen. Es zählt in Tagen.',
   own:'Formuliere selbst: Wenn ich …, dann … . Je konkreter, desto besser kannst du es testen.',
-  cown:'Der Host denkt sich etwas aus, das alle für sich machen. Es zählt in Tagen.'
 };
 [...HYPS,...CREW].forEach(x=>{x.how=HOW[x.id]});
+const parseNames=v=>String(v||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean).slice(0,12);
+/* Zufällig, aber auf allen Handys gleich: Auswahl hängt nur von Kalenderwoche und den Namen ab, nicht von der Reihenfolge. */
+const hash=str=>{let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
+function draw(names){
+  if(!names.length)return '';
+  const list=[...names].sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase(),'de'));
+  const key=list.map(n=>n.toLowerCase()).join('|');
+  const at=w=>hash(w+'|'+key)%list.length;
+  const w=weekNo();let i=at(w);
+  if(list.length>1&&i===at(w-1))i=(i+1)%list.length;
+  return list[i];
+}
+const hostOf=(mode,names,manual)=>mode==='manual'?String(manual||'').trim():draw(names);
+HYPS.forEach(h=>{if(!h.goal)h.goal={n:7,l:'Tage geschafft'}});
 const goalTag=g=>g.n===7?'jeden Tag':g.n===1?'1× pro Woche':`${g.n}× pro Woche`;
 const howPanel=(id,k)=>`<div class="how" style="--kc:var(--k${k})"><span class="eyebrow">So funktioniert’s</span><p>${esc(HOW[id])}</p></div>`;
 const POSK=[0,2,3];   /* Farbe nach Position der drei Karten */
-const INSTEAD=['Rausgegangen','Freunde getroffen','Sport','Gelesen','Kreativ','Gekocht','Früher geschlafen','Einfach nichts'];
-const TRIGGERS=['Langeweile','Im Bett','Warten / Bahn','Stress','Push-Nachricht','Aus Gewohnheit','FOMO'];
 const METRICS=[
   {k:'sleep',l:'Schlaf',c:5},
   {k:'focus',l:'Fokus',c:3},
@@ -356,21 +392,90 @@ const crew3=()=>{const o=(weekNo()%2)*3;return [0,1,2].map(i=>CREW[o+i])};
 
 function demo(){
   const start=addDays(today(),-4);
-  return {demo:true,hyp:HYPS[0],crewHyp:{...CREW[0],k:1},host:'Mia',start,baseline:270,crew:addDays(start,7),entries:{
-    1:{sleep:2,focus:2,mood:3,instead:['Einfach nichts'],trigger:['Im Bett','Aus Gewohnheit'],minutes:255,note:'Wecker vergessen, war komisch ohne Handy.'},
-    2:{sleep:3,focus:3,mood:3,instead:['Gelesen'],trigger:['Im Bett','Langeweile'],minutes:230,note:''},
-    3:{sleep:4,focus:3,mood:4,instead:['Gelesen','Freunde getroffen'],trigger:['Warten / Bahn'],minutes:195,cdone:true,note:'Erstes Mal ohne Scrollen eingeschlafen.'},
-    4:{sleep:4,focus:4,mood:4,instead:['Sport','Früher geschlafen'],trigger:['Langeweile','FOMO'],minutes:180,note:''}
+  return {demo:true,hyp:HYPS[0],crewHyp:{...CREW[0],k:1},host:'Mia',crewNames:['Mia','Jonas','Lea'],hostMode:'random',start,baseline:270,crew:addDays(start,7),entries:{
+    1:{sleep:2,focus:2,mood:3,minutes:255,note:'Wecker vergessen, war komisch ohne Handy.'},
+    2:{sleep:3,focus:3,mood:3,done:true,minutes:230,note:''},
+    3:{sleep:4,focus:3,mood:4,done:true,minutes:195,cdone:true,note:'Erstes Mal ohne Scrollen eingeschlafen.'},
+    4:{sleep:4,focus:4,mood:4,done:true,minutes:180,note:''}
   }};
 }
 function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
+/* Sprüche: lustig, aber positiv. Pro Tag fest, innerhalb einer Woche keine Wiederholung. */
+const SAY={
+  own:[
+    'Dein Daumen hat heute Urlaub. Er schickt Grüße.',
+    'Der Algorithmus vermisst dich. Lass ihn ruhig ein bisschen schmollen.',
+    'Heute offline, morgen Legende.',
+    'Dein Akku ist stolz auf dich. Und ehrlich gesagt erleichtert.',
+    'Achievement freigeschaltet: Echtes Leben, Level 1.',
+    'Dein Handy hat Feierabend, du hast Freizeit. Win-win.',
+    'Plot-Twist: Die Welt dreht sich auch ohne deinen Feed weiter.',
+    'Heute mehr Himmel als Bildschirm gesehen. Stark.',
+    'Breaking News: Mensch besiegt Handy. Handy fordert Revanche.',
+    'Wenn Daumen Medaillen bekämen: Gold.',
+    'Push-Nachrichten 0, du 1.',
+    'Für Werbung bist du heute langweilig. Fürs Leben spannend.',
+    'Dein inneres Faultier ist beeindruckt.',
+    'Das WLAN hat nach dir gefragt. Wir haben gesagt, du bist beschäftigt.',
+    'Deine Augen bedanken sich mit einem kleinen Applaus.',
+    'Heute nicht gescrollt, sondern gelebt. Fast schon poetisch.'
+  ],
+  crew:[
+    'Die Crew hält zusammen. Das WLAN fühlt sich ausgeschlossen.',
+    'Ein Handy allein ist schwach. Eine Crew ohne Handy ist unaufhaltsam.',
+    'Gruppenchat-Update: weniger Memes, mehr Leben.',
+    'Crew-Level gestiegen. Die anderen Apps tuscheln schon.',
+    'Gemeinsam offline ist das neue gemeinsam online.',
+    'Die Crew-Challenge zittert vor euch.',
+    'Wenn das eine Serie wäre, käme jetzt die Heldenmusik.',
+    'Eure Daumen haben eine Selbsthilfegruppe gegründet. Läuft super.',
+    'Crew-Power aktiviert. Akku-Power geschont.',
+    'Ihr seid wie eine Band. Nur ohne Instrumente. Und ohne Handys.'
+  ],
+  both:[
+    'Doppelpack! Dein Handy überlegt sich ein neues Hobby.',
+    'Zwei von zwei. Der Algorithmus braucht jetzt eine Pause.',
+    'Combo! Zwei Challenges, null Doomscrolling.',
+    'Volle Punktzahl. Dein Bildschirm nimmt sich den Rest des Tages frei.',
+    'Doppelt gemeistert. Ab sofort: Offline-Profi.',
+    'Eigene und Crew-Challenge. Heute bist du die Hauptfigur.',
+    'Zwei Häkchen an einem Tag. Das Handy weint leise in der Ecke.'
+  ],
+  joker:[
+    'Joker gezogen. Auch Superhelden brauchen mal frei.',
+    'Pause ist kein Aufgeben. Pause ist Strategie.',
+    'Heute Joker, morgen wieder Champion.',
+    'Selbst der beste Akku muss mal laden.',
+    'Clever: Wer den Joker richtig einsetzt, gewinnt die Woche.'
+  ]
+};
+const SAYK={own:3,crew:1,both:2,joker:5};
+const SAYL={own:'Eigene Challenge geschafft',crew:'Crew-Challenge geschafft',both:'Beide geschafft',joker:'Joker eingesetzt'};
+const dayKind=e=>!e?null:e.done&&e.cdone?'both':e.done?'own':e.cdone?'crew':e.joker?'joker':null;
+const saying=(kind,day)=>{const L=SAY[kind];return L[(hash(kind+'|'+S.start)+day)%L.length]};
+function showSaying(kind){
+  const sh=document.getElementById('sheet');
+  sh.innerHTML=`<div class="in pop" role="dialog" aria-modal="true" aria-labelledby="sayQ" style="--kc:var(--k${SAYK[kind]})">
+    ${ico(kind==='joker'?'joker':kind==='crew'?'stapel':'cown','ic deco')}
+    <span class="eyebrow">${SAYL[kind]} · Tag ${selDay}</span>
+    <p class="q" id="sayQ">${esc(saying(kind,selDay))}</p>
+    <button type="button" class="btn" data-act="sheet-close">Weiter</button></div>`;
+  sh.hidden=false; sh.querySelector('button').focus();
+}
+function buzz(){try{navigator.vibrate&&navigator.vibrate([25,40,60])}catch(e){}}
+function closeSheet(){const sh=document.getElementById('sheet');if(!sh.hidden){sh.hidden=true;sh.innerHTML=''}}
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeSheet()});
+
 let S=load()||demo();
+if(S.hyp&&!S.hyp.goal)S.hyp.goal={n:7,l:'Tage geschafft'};
 let tab='heute';
 let selDay=currentDay();
 let setup=null;
 let confirmReset=false;
+let moreOpen=false;
+let shareBlob=null,shareURL=null;
 
 function currentDay(){return Math.min(7,Math.max(1,diffDays(S.start,today())+1))}
 function finished(){return diffDays(S.start,today())>=7}
@@ -424,7 +529,7 @@ function crewCard(){
   const c=S.crewHyp;
   return `<section class="pop crew" style="--kc:var(--k${c.k??1})" aria-label="Crew-Challenge">
     ${ico(c.id==='cown'?'cown':c.id,'ic')}
-    <div class="tx"><span class="eyebrow">Crew${S.host?' · Host '+esc(S.host):''}</span>
+    <div class="tx"><span class="eyebrow">Crew${S.host?' · '+esc(S.host)+' entscheidet':''}</span>
       <div class="ct">${esc(c.t)}</div>${pips(crewDone(),c.goal.n)}</div>
   </section>`;
 }
@@ -443,14 +548,13 @@ function viewToday(){
   const days=Array.from({length:7},(_,i)=>{const n=i+1;const cls=['day',S.entries[n]?'done':'',n===d?'today':''].join(' ');
     const wd=WD[new Date(addDays(S.start,i)+'T12:00:00').getDay()];
     return `<button type="button" class="${cls}" data-act="day" data-v="${n}" aria-pressed="${n===selDay}" ${n>d?'disabled':''} aria-label="Tag ${n}, ${wd}${S.entries[n]?', erfasst':''}"><small>${wd}</small><b>${n}</b></button>`}).join('');
-  const metrics=METRICS.map(m=>`<div class="metric" role="group" aria-label="${m.l}">
+  const mrow=m=>`<div class="metric" role="group" aria-label="${m.l}">
       <h3>${m.l}</h3>
       <div class="faces">${[1,2,3,4,5].map(v=>`<button type="button" class="face" style="--fc:var(--f${v})" data-act="rate" data-k="${m.k}" data-v="${v}" aria-pressed="${e[m.k]===v}" aria-label="${m.l} ${v} von 5">${face(v)}</button>`).join('')}</div>
-    </div>`).join('');
-  const chips=(group,list)=>list.map(v=>`<button type="button" class="chip" data-act="chip" data-g="${group}" data-v="${esc(v)}" aria-pressed="${(e[group]||[]).includes(v)}">${esc(v)}</button>`).join('');
+    </div>`;
   const jd=jokerDay();
   const tiles=[];
-  if(S.hyp.goal)tiles.push(tile('goal',S.hyp.id,S.hyp.goal.l,goalDone(),S.hyp.goal.n,!!e.done,S.hyp.k??0));
+  if(S.hyp.goal)tiles.push(tile('goal',S.hyp.id,S.hyp.goal.l==='Tage geschafft'?S.hyp.t:S.hyp.goal.l,goalDone(),S.hyp.goal.n,!!e.done,S.hyp.k??0));
   if(S.crewHyp)tiles.push(tile('cgoal',S.crewHyp.id==='cown'?'cown':S.crewHyp.id,S.crewHyp.goal.l,crewDone(),S.crewHyp.goal.n,!!e.cdone,S.crewHyp.k??1));
   return `${demoBanner()}${hero()}${crewCard()}
   <div class="stack">
@@ -458,9 +562,11 @@ function viewToday(){
     <div class="head"><span class="eyebrow">${fmtDate(addDays(S.start,selDay-1))}</span><h2>${selDay===d?'Wie war dein Tag?':'Tag '+selDay+' nachtragen'}</h2></div>
   </div>
   ${tiles.length?`<div class="tiles ${tiles.length===1?'one':''}">${tiles.join('')}</div>`:''}
-  <div class="card">${metrics}</div>
-  <div class="card"><h3>Stattdessen</h3><div class="chips">${chips('instead',INSTEAD)}</div></div>
-  <div class="card"><h3>Auslöser</h3><div class="chips">${chips('trigger',TRIGGERS)}</div></div>
+  ${dayKind(e)?`<div class="pop quote" style="--kc:var(--k${SAYK[dayKind(e)]})"><span class="eyebrow">${SAYL[dayKind(e)]}</span><p>${esc(saying(dayKind(e),selDay))}</p></div>`:''}
+  <div class="card">${mrow(METRICS.find(m=>m.k==='mood'))}</div>
+  <button type="button" class="more" data-act="more" aria-expanded="${moreOpen}"><span><b>${moreOpen?'Weniger anzeigen':'Mehr erfassen'}</b><small>Schlaf, Fokus, Bildschirmzeit, Notiz</small></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  ${moreOpen?`<div class="card">${METRICS.filter(m=>m.k!=='mood').map(mrow).join('')}</div>
   <div class="card">
     <div class="stack"><h3>Bildschirmzeit</h3>
       <div class="stepper"><button type="button" data-act="min" data-v="-15" aria-label="15 Minuten weniger">−</button>
@@ -469,7 +575,7 @@ function viewToday(){
     </div>
     <div class="stack"><label for="note"><h3>Notiz</h3></label>
       <input type="text" id="note" maxlength="140" placeholder="Was hat dich überrascht?" value="${esc(e.note)}"></div>
-  </div>
+  </div>`:''}
   <button type="button" class="joker" data-act="joker" aria-pressed="${!!e.joker}" ${jd&&jd!==selDay?'disabled':''}>
     ${ico('joker')}<span><b>${e.joker?'Joker aktiv':'Joker'}</b><small>${jd&&jd!==selDay?'Schon bei Tag '+jd+' benutzt':e.joker?'Tag zählt, Zeit nicht':'1× pro Woche'}</small></span></button>
   <p class="saved">Gespeichert</p>`;
@@ -480,10 +586,9 @@ function stats(){
   const avg=k=>{const v=list.map(x=>x[k]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
   const first=k=>{const x=list.find(e=>e[k]!=null);return x?x[k]:null};
   const last=k=>{const x=[...list].reverse().find(e=>e[k]!=null);return x?x[k]:null};
-  const count=g=>{const c={};list.forEach(e=>(e[g]||[]).forEach(v=>c[v]=(c[v]||0)+1));return Object.entries(c).sort((a,b)=>b[1]-a[1])};
   const mins=list.filter(e=>e.minutes!=null&&!e.joker);
   const gained=mins.reduce((s,e)=>s+(S.baseline-e.minutes),0);
-  return {list,avg,first,last,instead:count('instead'),trigger:count('trigger'),mins,gained};
+  return {list,avg,first,last,mins,gained};
 }
 
 function dotChart(st){
@@ -510,39 +615,32 @@ function delta(st,k){
   return `<span class="delta ${cls}">${d>0?'↑ +':d<0?'↓ −':'→ '}${Math.abs(d)}</span>`;
 }
 
-function topList(arr,k){
-  if(!arr.length)return '<p class="hint">–</p>';
-  const max=arr[0][1];
-  return `<ul class="toplist" style="--kc:var(--k${k})">${arr.slice(0,4).map(([l,n])=>`<li><span class="lbl">${esc(l)}</span><span class="bar"><i style="width:${n/max*100}%"></i></span><span class="n">${n}×</span></li>`).join('')}</ul>`;
-}
-
-function questions(st){
-  const top=st.trigger[0]&&st.trigger[0][0];
-  return [
-    `„${S.hyp.t}“: leichter oder schwerer als gedacht?`,
-    top?`Auslöser „${top}“: wer kennt das?`:'Wann hast du zum Handy gegriffen?',
-    'Was nimmst du mit?',
-    'Wer ist nächste Woche Host?'
-  ];
-}
-
 function shareText(st){
   const g=st.gained;
-  const lines=[`offlab · Woche 1`,`Experiment: ${S.hyp.t}`];
+  const lines=[`offlab · Woche 1`,`Experiment: ${S.hyp.t}`,`Titel: ${grade().title}`];
   if(S.crewHyp)lines.push(`Crew: ${S.crewHyp.t} (${Math.min(crewDone(),S.crewHyp.goal.n)} von ${S.crewHyp.goal.n}×)`);
   if(S.hyp.goal)lines.push(`Ziel: ${Math.min(goalDone(),S.hyp.goal.n)} von ${S.hyp.goal.n}× ${S.hyp.goal.l}`);
   if(st.mins.length)lines.push(g>0?`Zurückgewonnen: ca. ${fmtMin(g)}`:`Handyzeit: mehr als vorher (${fmtMin(-g)})`);
   METRICS.forEach(m=>{const a=st.first(m.k),b=st.last(m.k);if(a!=null&&b!=null)lines.push(`${m.l}: ${a} → ${b} (von 5)`)});
-  if(st.instead[0])lines.push(`Stattdessen am häufigsten: ${st.instead[0][0]}`);
   return lines.join('\n');
+}
+
+const weekDone=()=>finished()||currentDay()>=7;
+function grade(){
+  const part=(done,n)=>{const exp=weekDone()?n:Math.max(1,Math.min(n,Math.ceil(n*currentDay()/7)));return Math.min(1,done/exp)};
+  const ps=[part(goalDone(),S.hyp.goal.n)];
+  if(S.crewHyp)ps.push(part(crewDone(),S.crewHyp.goal.n));
+  const r=ps.reduce((a,b)=>a+b,0)/ps.length;
+  if(r>=.85)return {title:'Offline-Ninja',line:'Lautlos, schnell, kaum gesehen. Dein Handy fragt sich, wo du warst.',k:0};
+  if(r>=.6)return {title:'Teilzeit-Mönch',line:'Halb Zen, halb WLAN. Eine sehr gesunde Mischung.',k:3};
+  if(r>=.35)return {title:'Scroll-Rebell',line:'Du widersprichst dem Feed. Der Feed ist beleidigt. Gut so.',k:1};
+  return {title:'Mutige Testperson',line:'Experiment gestartet, ehrlich hingeschaut. Genau darum geht’s.',k:5};
 }
 
 function viewReport(){
   const st=stats(); const n=st.list.length;
   if(!n)return `${hero()}<div class="card"><h2>Noch leer</h2><p class="hint">Erfasse Tag 1 unter „Heute“.</p>
     <button class="btn" data-act="tab" data-v="heute">Zu Heute</button></div>`;
-  const crewIn=diffDays(today(),S.crew);
-  const crewTxt=crewIn>0?`in ${crewIn} ${crewIn===1?'Tag':'Tagen'}`:crewIn===0?'heute':'war am '+fmtDate(S.crew,{day:'numeric',month:'short'});
   const g=st.gained;
   const big=st.mins.length?`<div class="pop bigrow" style="--kc:var(--k${g>=0?2:1})"><span class="eyebrow" style="color:inherit;opacity:.7">${g>=0?'Zurückgewonnen':'Mehr Handyzeit'}</span>
       <span class="num" data-min="${Math.abs(g)}" data-sign="${g>=0?'≈ ':'+ '}">${g>=0?'≈ ':'+ '}${fmtMin(g)}</span>
@@ -556,44 +654,26 @@ function viewReport(){
   const jokerNote=jk?`<p class="note">Joker an Tag ${jk}. Zeit dieses Tages ist nicht eingerechnet.</p>`:'';
   return `${demoBanner()}
   <div class="head"><span class="eyebrow">${n} von 7 Tagen</span><h2>Dein Bericht</h2></div>
+  ${(gr=>`<div class="pop grade" style="--kc:var(--k${gr.k})">${ico('joker','ic gdeco')}<span class="eyebrow">${weekDone()?'Wochen-Zeugnis':'Dein Titel bisher'}</span><div class="gt">${gr.title}</div><p>${gr.line}</p></div>`)(grade())}
   ${big}
   ${kpis.length?`<div class="tiles ${kpis.length===1?'one':''}">${kpis.join('')}</div>`:''}
   <div class="stats">${tiles}</div>
   <div class="card"><div class="chart">${dotChart(st)}</div></div>
-  <div class="two">
-    <div class="card"><h3>Stattdessen</h3>${topList(st.instead,2)}</div>
-    <div class="card"><h3>Auslöser</h3>${topList(st.trigger,1)}</div>
-  </div>
   ${notes||jokerNote?`<div class="stack">${notes}${jokerNote}</div>`:''}
   <p class="hint">Selbstauskunft: so hast du es erlebt.</p>
 
   <div class="stack">
-    <div class="head"><span class="eyebrow">Crew-Runde ${crewTxt}</span><h2>Darüber redet ihr</h2></div>
-    <ul class="questions">${questions(st).map(q=>`<li>${esc(q)}</li>`).join('')}</ul>
-    <div class="card">
-      <h3>Host nächste Woche</h3>
-      <label for="nextHost" class="hint">Meiste Check-ins oder beste Erkenntnis. Ihr entscheidet.</label>
-      <input type="text" id="nextHost" maxlength="30" placeholder="Name" value="${esc(S.nextHost||'')}">
-    </div>
-  </div>
-
-  <div class="stack">
-    <h2>Deine Karte</h2>
-    <div class="pop share" id="shareCard" style="--kc:var(--k${S.hyp.k??0})">
-      <span class="eyebrow">offlab · Woche 1</span>
-      <div class="t">${esc(S.hyp.t)}</div>
-      ${S.hyp.goal?`<div class="line"><span>Ziel</span><span>${Math.min(goalDone(),S.hyp.goal.n)} von ${S.hyp.goal.n}×</span></div>`:''}
-      ${S.crewHyp?`<div class="line"><span>Crew</span><span>${esc(S.crewHyp.t)}</span></div>`:''}
-      ${st.mins.length?`<div class="line"><span>${g>=0?'Zurückgewonnen':'Mehr Handyzeit'}</span><span>${g>=0?'≈ ':'+ '}${fmtMin(g)}</span></div>`:''}
-      ${METRICS.map(m=>{const a=st.first(m.k),b=st.last(m.k);return a!=null?`<div class="line"><span>${m.l}</span><span>${a} → ${b}</span></div>`:''}).join('')}
-      ${st.instead[0]?`<div class="line"><span>Stattdessen</span><span>${esc(st.instead[0][0])}</span></div>`:''}
-    </div>
-    <button class="btn block" data-act="copy">Als Text kopieren</button>
+    <h2>Deine Story-Karte</h2>
+    <div class="shot"><img id="shareImg" alt="Bild-Karte deiner Woche zum Teilen"></div>
+    <div class="row"><button class="btn" data-act="shareimg">Bild teilen</button><button class="btn ghost" data-act="copy">Text kopieren</button></div>
+    <p class="hint">Oder Bild gedrückt halten und speichern.</p>
     <textarea id="copyFallback" readonly hidden style="width:100%;min-height:140px;border-radius:14px;border:2px solid var(--line);background:var(--surface);padding:10px"></textarea>
   </div>`;
 }
 
-function newSetup(){return {hyp:'',w:'',d:'',baseline:240,crew:addDays(today(),7),host:S.nextHost||'',cpick:'',cown:''}}
+function newSetup(){return {hyp:'',w:'',d:'',baseline:240,crew:addDays(today(),7),host:S.hostMode==='manual'?(S.host||''):'',names:(S.crewNames||[]).join(', '),mode:S.hostMode||'random',cpick:'',cown:''}}
+
+function hostNowText(s){const n=draw(parseNames(s.names));return n?`Diese Woche: <b>${esc(n)}</b>`:'Namen eintragen, dann wird jede Woche jemand ausgelost.'}
 
 function viewSetup(){
   const s=setup; const three=threeOpts();
@@ -614,12 +694,20 @@ function viewSetup(){
 
   <div class="head"><span class="eyebrow">Alle machen mit</span><h2>Crew</h2></div>
   <div class="card">
-    <div class="stack"><label for="host"><h3>Host der Woche</h3></label>
-      <input type="text" id="host" maxlength="30" placeholder="Name" value="${esc(s.host)}"></div>
+    <div class="stack"><h3>Du entscheidest diese Woche</h3>
+      <div class="chips" role="group" aria-label="Wer entscheidet">
+        <button type="button" class="chip" data-act="hmode" data-v="random" aria-pressed="${s.mode==='random'}">Zufällig</button>
+        <button type="button" class="chip" data-act="hmode" data-v="manual" aria-pressed="${s.mode==='manual'}">Selbst eingeben</button>
+      </div>
+      ${s.mode==='random'?`<label for="names" class="hint">Namen der Crew, mit Komma getrennt. Jede Woche wird eine Person ausgelost.</label>
+      <input type="text" id="names" maxlength="160" placeholder="Mia, Jonas, Lea" value="${esc(s.names)}">
+      <p class="hostnow" id="hostNow">${hostNowText(s)}</p>`
+      :`<label for="host" class="hint">Wer entscheidet diese Woche?</label>
+      <input type="text" id="host" maxlength="30" placeholder="Name" value="${esc(s.host)}">`}</div>
   </div>
   <div class="opts sm" role="group" aria-label="Crew-Challenge wählen">${copts}</div>
   <div class="card" ${s.cpick==='own'?'':'hidden'}>
-    <div class="stack"><label for="cown"><h3>Idee des Hosts</h3></label><input type="text" id="cown" maxlength="80" placeholder="Alle posten nichts bis Sonntag" value="${esc(s.cown)}"></div>
+    <div class="stack"><label for="cown"><h3>Idee für die Crew</h3></label><input type="text" id="cown" maxlength="80" placeholder="Alle posten nichts bis Sonntag" value="${esc(s.cown)}"></div>
   </div>
 
   <div class="card">
@@ -651,12 +739,61 @@ function viewExp(){
   <p class="hint">Alles bleibt auf diesem Gerät.</p>`;
 }
 
+function rr(x,X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()}
+function wrap(x,t,maxW){const out=[];let l='';String(t).split(/\s+/).forEach(w=>{const tr=l?l+' '+w:w;if(x.measureText(tr).width>maxW&&l){out.push(l);l=w}else l=tr});if(l)out.push(l);return out}
+async function makeCard(){
+  const st=stats(),gr=grade(),g=st.gained;
+  const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  try{if(document.fonts)await Promise.race([Promise.all(['800 96px "Bricolage Grotesque"','600 40px "Figtree"','500 28px "JetBrains Mono"'].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,1500))])}catch(e){}
+  const D='"Bricolage Grotesque", system-ui, sans-serif',B='Figtree, system-ui, sans-serif',M='"JetBrains Mono", ui-monospace, monospace';
+  const INK='#1E1633',PAPER='#EEEAF7',MUTED='#6E6683',ACC='#FF5B2E',K=['#C9B9FF','#FF9A76','#8EE3BC','#FFD84D','#FFA6D2','#8CC4FF'];
+  x.fillStyle=PAPER;x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(30,22,51,.07)';x.lineWidth=2;
+  for(let i=0;i<=W;i+=54){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}
+  for(let j=0;j<=H;j+=54){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke()}
+  const box=(X,Y,w,h,fill)=>{rr(x,X+12,Y+14,w,h,44);x.fillStyle=INK;x.fill();rr(x,X,Y,w,h,44);x.fillStyle=fill;x.fill();x.lineWidth=6;x.strokeStyle=INK;x.stroke()};
+  x.textBaseline='alphabetic';
+  x.font=`800 104px ${D}`;x.fillStyle=INK;x.fillText('off',80,200);const w1=x.measureText('off').width;x.fillStyle=ACC;x.fillText('lab',80+w1,200);
+  x.font=`500 30px ${M}`;x.fillStyle=MUTED;x.fillText(('Woche ab '+fmtDate(S.start,{day:'numeric',month:'long'})).toUpperCase(),84,256);
+  // Karte 1: Experiment
+  let y=320;x.font=`800 92px ${D}`;const tl=wrap(x,S.hyp.t,820).slice(0,3);
+  const h1=110+tl.length*96+130;box(80,y,920,h1,K[S.hyp.k??0]);
+  x.fillStyle=INK;x.font=`500 28px ${M}`;x.fillText('MEIN EXPERIMENT',130,y+86);
+  x.font=`800 92px ${D}`;tl.forEach((l,i)=>x.fillText(l,128,y+190+i*96));
+  const gn=S.hyp.goal.n,gd=Math.min(goalDone(),gn),py=y+h1-70;
+  for(let i=0;i<gn;i++){x.beginPath();x.arc(150+i*62,py,22,0,6.283);x.lineWidth=6;x.strokeStyle=INK;x.stroke();if(i<gd){x.fillStyle=INK;x.fill()}}
+  x.font=`600 36px ${B}`;x.fillStyle=INK;x.fillText(`${gd} von ${gn}`,150+gn*62,py+13);
+  // Karte 2: Titel
+  y+=h1+60;x.font=`600 38px ${B}`;const gl=wrap(x,gr.line,820).slice(0,3);
+  const h2=96+100+gl.length*50+50;box(80,y,920,h2,K[gr.k===(S.hyp.k??0)?(gr.k+2)%6:gr.k]);
+  x.fillStyle=INK;x.font=`500 28px ${M}`;x.fillText(weekDone()?'WOCHEN-ZEUGNIS':'MEIN TITEL BISHER',130,y+86);
+  x.font=`800 88px ${D}`;x.fillText(gr.title,128,y+186);
+  x.font=`600 38px ${B}`;gl.forEach((l,i)=>x.fillText(l,130,y+250+i*50));
+  // Zeilen
+  y+=h2+80;const rows=[];
+  if(S.crewHyp)rows.push(['Crew',`${Math.min(crewDone(),S.crewHyp.goal.n)}/${S.crewHyp.goal.n} · ${S.crewHyp.t}`]);
+  if(st.mins.length)rows.push([g>=0?'Zurückgewonnen':'Mehr Handyzeit',(g>=0?'≈ ':'+ ')+fmtMin(g)]);
+  METRICS.forEach(m=>{const a=st.first(m.k),b=st.last(m.k);if(a!=null&&b!=null)rows.push([m.l,`${a} → ${b}`])});
+  rows.forEach(([l,v])=>{if(y+70>H-150)return;
+    x.strokeStyle=INK;x.lineWidth=4;x.beginPath();x.moveTo(80,y);x.lineTo(1000,y);x.stroke();
+    x.fillStyle=INK;x.font=`600 40px ${B}`;x.fillText(l,84,y+62);
+    x.font=`800 44px ${D}`;let vv=v;while(x.measureText(vv).width>560&&vv.length>4)vv=vv.slice(0,-2)+'…';
+    x.textAlign='right';x.fillText(vv,996,y+64);x.textAlign='left';y+=100});
+  x.font=`600 34px ${B}`;x.fillStyle=MUTED;x.textAlign='center';x.fillText('Offline ist das neue Online.',W/2,H-90);x.textAlign='left';
+  return await new Promise(r=>c.toBlob(r,'image/png'));
+}
+function refreshCard(){
+  makeCard().then(bl=>{if(!bl)return;if(shareURL)URL.revokeObjectURL(shareURL);shareBlob=bl;shareURL=URL.createObjectURL(bl);
+    const im=document.getElementById('shareImg');if(im)im.src=shareURL}).catch(()=>{});
+}
+
 function render(animate){
   const v=document.getElementById('view');
   v.className=animate?'enter':'';
   v.innerHTML=tab==='heute'?viewToday():tab==='bericht'?viewReport():viewExp();
   document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.v===tab?'page':'false'));
   if(animate)v.querySelectorAll('[data-min]').forEach(countUp);
+  if(document.getElementById('shareImg'))refreshCard();
 }
 
 function entry(){return S.entries[selDay]||(S.entries[selDay]={})}
@@ -664,40 +801,50 @@ function entry(){return S.entries[selDay]||(S.entries[selDay]={})}
 document.addEventListener('click',ev=>{
   const b=ev.target.closest('[data-act]'); if(!b)return;
   const a=b.dataset.act,v=b.dataset.v;
+  if(a==='sheet-close'){closeSheet();return}
+  if(a==='more'){moreOpen=!moreOpen;render();return}
   if(a==='tab'){tab=v;confirmReset=false;if(v==='heute')selDay=Math.min(selDay,currentDay());render(true);window.scrollTo(0,0);return}
   if(a==='day'){selDay=+v;render();return}
   if(a==='rate'){const e=entry();e[b.dataset.k]=e[b.dataset.k]===+v?null:+v;save();render();return}
   if(a==='chip'){const e=entry();const g=b.dataset.g;e[g]=e[g]||[];e[g]=e[g].includes(v)?e[g].filter(x=>x!==v):[...e[g],v];save();render();return}
   if(a==='min'){const e=entry();const base=e.minutes??S.baseline;e.minutes=Math.max(0,Math.min(1440,base+(e.minutes==null?0:+v)));save();document.getElementById('minOut').textContent=fmtMin(e.minutes);
     document.querySelectorAll('.day')[selDay-1].classList.add('done');return}
-  if(a==='goal'){const e=entry();e.done=!e.done;if(e.done)burst(b);save();render();return}
-  if(a==='cgoal'){const e=entry();e.cdone=!e.cdone;if(e.cdone)burst(b);save();render();return}
-  if(a==='joker'){const e=entry();const jd=jokerDay();if(jd&&jd!==selDay)return;e.joker=!e.joker;if(e.joker)burst(b);save();render();return}
+  if(a==='goal'){const e=entry();e.done=!e.done;if(e.done){burst(b);buzz()}save();render();if(e.done)showSaying(dayKind(e));return}
+  if(a==='cgoal'){const e=entry();e.cdone=!e.cdone;if(e.cdone){burst(b);buzz()}save();render();if(e.cdone)showSaying(dayKind(e));return}
+  if(a==='joker'){const e=entry();const jd=jokerDay();if(jd&&jd!==selDay)return;e.joker=!e.joker;if(e.joker){burst(b);buzz()}save();render();if(e.joker)showSaying('joker');return}
   if(a==='start-own'){setup=newSetup();tab='exp';render(true);window.scrollTo(0,0);return}
   if(a==='pick'){setup.hyp=v;render();return}
+  if(a==='hmode'){setup.mode=v;render();return}
   if(a==='cpick'){setup.cpick=setup.cpick===v?'':v;render();return}
   if(a==='cancel'){setup=null;render(true);return}
   if(a==='launch'){
     if(!setup.hyp){toast('Bitte eine Challenge wählen');return}
     let crewHyp=null;
     if(setup.cpick==='own'){
-      if(!setup.cown.trim()){toast('Bitte die Idee des Hosts eintragen');return}
+      if(!setup.cown.trim()){toast('Bitte die Idee eintragen');return}
       crewHyp={id:'cown',t:setup.cown.trim().slice(0,40),w:setup.cown.trim(),d:'',goal:{n:7,l:'Tage dabei'},k:1};
     } else if(setup.cpick) crewHyp={...CREW.find(c=>c.id===setup.cpick),k:1};
     let hyp;
     if(setup.hyp==='own'){
       if(!setup.w.trim()||!setup.d.trim()){toast('Bitte beide Felder ausfüllen');return}
-      hyp={id:'own',t:setup.w.trim().replace(/^ich\s+/i,'').replace(/^./,c=>c.toUpperCase()).slice(0,40),w:'Wenn ich '+setup.w.trim()+',',d:'dann '+setup.d.trim()+'.',k:4};
+      hyp={id:'own',t:setup.w.trim().replace(/^ich\s+/i,'').replace(/^./,c=>c.toUpperCase()).slice(0,40),w:'Wenn ich '+setup.w.trim()+',',d:'dann '+setup.d.trim()+'.',goal:{n:7,l:'Tage geschafft'},k:4};
     } else {
       const idx=threeOpts().findIndex(h=>h.id===setup.hyp);
       hyp={...HYPS.find(h=>h.id===setup.hyp),k:POSK[Math.max(0,idx)]};
     }
     burst(b);
-    S={demo:false,hyp,crewHyp,host:setup.host.trim(),start:today(),baseline:setup.baseline,crew:setup.crew||addDays(today(),7),entries:{}};
+    const names=parseNames(setup.names);
+    S={demo:false,hyp,crewHyp,host:hostOf(setup.mode,names,setup.host),crewNames:names,hostMode:setup.mode,start:today(),baseline:setup.baseline,crew:setup.crew||addDays(today(),7),entries:{}};
     save();setup=null;tab='heute';selDay=1;render(true);window.scrollTo(0,0);toast('Läuft. Viel Erfolg!');return}
   if(a==='reset-ask'){confirmReset=true;render();return}
   if(a==='reset-no'){confirmReset=false;render();return}
   if(a==='reset-yes'){try{localStorage.removeItem(KEY)}catch(e){}S=demo();confirmReset=false;setup=newSetup();render(true);toast('Gelöscht');return}
+  if(a==='shareimg'){
+    if(!shareBlob){toast('Bild wird erstellt');return}
+    try{const f=new File([shareBlob],'offlab-woche.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'offlab'}).catch(()=>{});return}}catch(e){}
+    try{const l=document.createElement('a');l.href=shareURL;l.download='offlab-woche.png';document.body.appendChild(l);l.click();l.remove()}catch(e){}
+    toast('Bild gedrückt halten zum Speichern');return}
   if(a==='copy'){
     const txt=shareText(stats());
     const fb=()=>{const t=document.getElementById('copyFallback');t.hidden=false;t.value=txt;t.focus();t.select();toast('Markiert, jetzt kopieren')};
@@ -708,11 +855,11 @@ document.addEventListener('click',ev=>{
 document.addEventListener('input',ev=>{
   const t=ev.target;
   if(t.id==='note'){entry().note=t.value;save();return}
-  if(t.id==='nextHost'){S.nextHost=t.value;save();return}
   if(!setup)return;
   if(t.id==='ownW')setup.w=t.value;
   if(t.id==='ownD')setup.d=t.value;
   if(t.id==='host')setup.host=t.value;
+  if(t.id==='names'){setup.names=t.value;const h=document.getElementById('hostNow');if(h)h.innerHTML=hostNowText(setup)}
   if(t.id==='cown')setup.cown=t.value;
   if(t.id==='base'){setup.baseline=+t.value;document.getElementById('baseOut').textContent=fmtMin(setup.baseline)}
   if(t.id==='crew')setup.crew=t.value;
