@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Analog – App laden</title>
+<meta name="description" content="Analog: 7 Tage weniger Handy, mit deiner Crew. Android-App zum Herunterladen.">
+<meta name="theme-color" content="#EEEAF7">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Eine Spalte auf Millimeterpapier, Sticker-Karten wie in der App */
+:root{--bg:#EEEAF7;--grid:rgba(30,22,51,.06);--surface:#fff;--ink:#1E1633;--muted:#6E6683;--line:#D9D3E8;--accent:#FF5B2E;--k0:#C9B9FF;--k2:#8EE3BC;--k3:#FFD84D;
+  --d:'Bricolage Grotesque',system-ui,sans-serif;--b:'Figtree',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#15101F;--grid:rgba(241,236,250,.05);--surface:#221B2E;--ink:#F1ECFA;--muted:#A99FBC;--line:#3A3049;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--b);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+main{max-width:480px;margin:0 auto;padding:28px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font:800 54px/1 var(--d);letter-spacing:-.05em;margin:0}
+.brand b{color:var(--accent)}
+.brand img{width:46px;height:46px;border-radius:12px}
+h2{font:800 30px/1.05 var(--d);letter-spacing:-.03em;margin:0}
+p{margin:0}
+.muted{color:var(--muted)}
+.pop{border:2px solid #1E1633;border-radius:22px;box-shadow:0 4px 0 #1E1633}
+.dl{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--accent);color:#1E1633;text-decoration:none;padding:18px;font:800 22px var(--d)}
+.dl small{font:500 11px var(--m);letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.dl:active{transform:translateY(3px);box-shadow:0 1px 0 #1E1633}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+li{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px 14px 12px 52px;position:relative;counter-increment:s}
+li::before{content:counter(s);position:absolute;left:12px;top:11px;width:28px;height:28px;border-radius:50%;background:var(--k3);color:#1E1633;border:2px solid #1E1633;display:grid;place-items:center;font:800 15px var(--d)}
+.qr{background:var(--k0);color:#1E1633;padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.qr img{width:min(240px,70vw);height:auto;border-radius:12px;border:2px solid #1E1633;background:#fff}
+.eyebrow{font:500 11px var(--m);letter-spacing:.08em;text-transform:uppercase}
+.note{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1 class="brand">analog<b>.</b><img src="icon.png" alt=""></h1>
+  <h2>Kannst du noch offline?</h2>
+  <p class="muted">7 Tage, eine Challenge für dich und eine für deine Crew. Ohne Verzicht-Gefühl, mit viel Humor.</p>
+
+  <a class="dl pop" href="https://github.com/djderksen1991-beep/offlab/releases/latest/download/Analog.apk">
+    App für Android laden
+    <small>Immer die neueste Version</small>
+  </a>
+
+  <ol>
+    <li>Auf den Knopf tippen und die Datei <b>Analog.apk</b> herunterladen.</li>
+    <li>Datei öffnen. Fragt Android, ob Chrome Apps installieren darf: <b>Zulassen</b>, dann zurück.</li>
+    <li><b>Installieren</b> tippen. Warnt Play Protect: <b>Trotzdem installieren</b>. Die App ist noch nicht im Play Store, darum die Warnung.</li>
+    <li>Analog öffnen, Namen eingeben und mit dem Code deiner Crew beitreten.</li>
+  </ol>
+
+  <section class="qr pop">
+    <span class="eyebrow">Weitergeben</span>
+    <img src="qr.png" alt="QR-Code zu dieser Seite">
+    <p><b>Scannen, laden, mitmachen.</b></p>
+  </section>
+
+  <p class="note">Nur für Android. Updates: einfach erneut laden und über die alte Version installieren, deine Daten bleiben erhalten.</p>
+</main>
+</body>
+</html>
