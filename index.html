@@ -585,9 +585,9 @@ document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeSheet()});
 
 let S=load()||demo();
 if(S.hyp&&!S.hyp.goal)S.hyp.goal={n:7,l:'Tage geschafft'};
-let tab='heute';
+let tab=S.demo?'exp':'heute';
 let selDay=currentDay();
-let setup=null;
+let setup=S.demo?newSetup():null;
 let confirmReset=false;
 let moreOpen=false;
 let shareBlob=null,shareURL=null;
@@ -649,7 +649,7 @@ function crewCard(){
   </section>`;
 }
 function demoBanner(){
-  return S.demo?`<div class="banner"><span>${tr('Beispieldaten','Sample data')}</span><button class="btn small" data-act="start-own">${tr('Eigenes starten','Start your own')}</button></div>`:'';
+  return S.demo?`<div class="banner"><span>${tr('Das ist eine Beispielwoche.','This is a sample week.')}</span><button class="btn small" data-act="start-own">${tr('Eigene Woche starten','Start your week')}</button></div>`:'';
 }
 
 function tile(act,id,label,done,n,on,k){
@@ -692,7 +692,7 @@ function viewToday(){
       <input type="text" id="note" maxlength="140" placeholder="${tr('Was hat dich überrascht?','What surprised you?')}" value="${esc(e.note)}"></div>
   </div>`:''}
   <button type="button" class="joker" data-act="joker" aria-pressed="${!!e.joker}" ${jd&&jd!==selDay?'disabled':''}>
-    ${ico('joker')}<span><b>${e.joker?tr('Joker aktiv','Joker active'):'Joker'}</b><small>${jd&&jd!==selDay?tr('Schon bei Tag '+jd+' benutzt','Already used on day '+jd):e.joker?tr('Tag zählt, Zeit nicht','Day counts, time doesn’t'):tr('1× pro Woche','1× a week')}</small></span></button>
+    ${ico('joker')}<span><b>${e.joker?tr('Joker aktiv','Joker active'):tr('Joker einsetzen','Play joker')}</b><small>${jd&&jd!==selDay?tr('Schon an Tag '+jd+' eingesetzt. Nächste Woche gibt’s einen neuen.','Already played on day '+jd+'. You get a new one next week.'):e.joker?tr('Dieser Tag zählt als geschafft. Seine Bildschirmzeit fließt nicht in den Bericht.','This day counts as done. Its screen time is left out of the report.'):tr('Hat heute nicht geklappt? Der Tag zählt trotzdem als geschafft. 1× pro Woche.','Didn’t work out today? The day still counts as done. Once a week.')}</small></span></button>
   <p class="saved">${tr('Gespeichert','Saved')}</p>`;
 }
 
@@ -801,7 +801,7 @@ function viewSetup(){
       <span class="ib">${ico(c.id)}</span><span><span class="ot">${esc(L(c).t)}</span><span class="og">${goalTag(c.goal)}</span></span></button>${s.cpick===c.id?howPanel(c.id,1):''}`).join('')
    +`<button type="button" class="pop opt dashed" style="--kc:var(--k1)" data-act="cpick" data-v="own" aria-pressed="${s.cpick==='own'}">
       <span class="ib">${ico('cown')}</span><span class="ot">${tr('Eigene Idee','Your own idea')}</span></button>${s.cpick==='own'?howPanel('cown',1):''}`;
-  return `<div class="head"><span class="eyebrow">${tr('Neue Woche','New week')}</span><h2>${tr('Wähle eine','Pick one')}</h2></div>
+  return `<div class="head"><span class="eyebrow">${tr('Neue Woche','New week')}</span><h2>${tr('Wähle eine','Pick one')}</h2>${S.demo?`<p class="hint">${tr('7 Tage: eine Challenge für dich, eine für die ganze Crew.','7 days: one challenge for you, one for the whole crew.')}</p>`:''}</div>
   <div class="opts" role="group" aria-label="${tr('Challenge wählen','Pick a challenge')}">${opts}</div>
   <div class="card" ${s.hyp==='own'?'':'hidden'}>
     <div class="stack"><label for="ownW"><h3>${tr('Wenn ich …','If I …')}</h3></label><input type="text" id="ownW" maxlength="90" placeholder="${tr('nach 22 Uhr den Flugmodus anmache','switch to flight mode after 10 pm')}" value="${esc(s.w)}"></div>
@@ -835,7 +835,7 @@ function viewSetup(){
     <div class="stack"><label for="crew"><h3>${tr('Crew-Runde','Crew meetup')}</h3></label>
       <input type="date" id="crew" value="${s.crew}"></div>
   </div>
-  <div class="row"><button class="btn" data-act="launch">${tr('Los geht’s','Let’s go')}</button>${S.demo&&!load()?'':`<button class="btn ghost" data-act="cancel">${tr('Abbrechen','Cancel')}</button>`}</div>`;
+  <div class="row"><button class="btn" data-act="launch">${tr('Los geht’s','Let’s go')}</button><button class="btn ghost" data-act="cancel">${S.demo?tr('Beispielwoche ansehen','See a sample week'):tr('Abbrechen','Cancel')}</button></div>`;
 }
 
 function viewExp(){
@@ -938,7 +938,7 @@ document.addEventListener('click',ev=>{
   if(a==='pick'){setup.hyp=v;render();return}
   if(a==='hmode'){setup.mode=v;render();return}
   if(a==='cpick'){setup.cpick=setup.cpick===v?'':v;render();return}
-  if(a==='cancel'){setup=null;render(true);return}
+  if(a==='cancel'){setup=null;if(S.demo)tab='heute';render(true);window.scrollTo(0,0);return}
   if(a==='launch'){
     if(!setup.hyp){toast(tr('Bitte eine Challenge wählen','Please pick a challenge'));return}
     let crewHyp=null;
